@@ -28,6 +28,7 @@ import cc.coocol.jinxiujob.activities.MainActivity;
 import cc.coocol.jinxiujob.adapters.EnterprisesListAdapter;
 import cc.coocol.jinxiujob.configs.MyConfig;
 import cc.coocol.jinxiujob.enums.EntersListType;
+import cc.coocol.jinxiujob.fragments.BaseFragment;
 import cc.coocol.jinxiujob.gsons.ResponseStatus;
 import cc.coocol.jinxiujob.models.AllEnterItemModel;
 import cc.coocol.jinxiujob.models.AllJobItemModel;
@@ -37,7 +38,7 @@ import cc.coocol.jinxiujob.networks.HttpClient;
 import cc.coocol.jinxiujob.networks.URL;
 
 
-public class HotEnterprisesFragment extends Fragment implements
+public class HotEnterprisesFragment extends BaseFragment implements
         SwipeRefreshLayout.OnRefreshListener, EnterprisesListAdapter.OnLastItemVisibleListener{
 
     private SwipeRefreshLayout refreshLayout;
@@ -72,6 +73,11 @@ public class HotEnterprisesFragment extends Fragment implements
         }
     };
 
+
+    @Override
+    public String getTile() {
+        return null;
+    }
 
     public HotEnterprisesFragment() {
 
@@ -132,13 +138,13 @@ public class HotEnterprisesFragment extends Fragment implements
                 ResponseStatus responseStatus = new HttpClient().get(URL.ALL_ENTERPRISES, m, false);
                 if (responseStatus != null && responseStatus.getStatus() != null &&
                         responseStatus.getStatus().equals("success")) {
-                    List<AllEnterItemModel> models = HttpClient.getGson().fromJson(responseStatus.getData(),
-                            new TypeToken<ArrayList<AllEnterItemModel>>() {
+                    List<HotEnterItemModel> models = HttpClient.getGson().fromJson(responseStatus.getData(),
+                            new TypeToken<ArrayList<HotEnterItemModel>>() {
                             }.getType());
                     if (type == REFRESH) {
                         if (models != null) {
                             enterItemModels.clear();
-                            for (AllEnterItemModel enterItemModel : models) {
+                            for (HotEnterItemModel enterItemModel : models) {
                                 enterItemModels.add(enterItemModel);
                             }
                             if (enterItemModels.size() > 0) {
@@ -150,7 +156,7 @@ public class HotEnterprisesFragment extends Fragment implements
                         if (models == null || models.size() == 0) {
                             handler.sendEmptyMessage(NO_MORE);
                         } else {
-                            for (AllEnterItemModel enterItemModel : models) {
+                            for (HotEnterItemModel enterItemModel : models) {
                                 enterItemModels.add(enterItemModel);
                             }if (enterItemModels.size() > 0) {
                                 startId = enterItemModels.size();

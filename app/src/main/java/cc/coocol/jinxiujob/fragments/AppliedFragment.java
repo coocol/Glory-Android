@@ -24,7 +24,7 @@ import cc.coocol.jinxiujob.enums.JobListType;
 import cc.coocol.jinxiujob.models.AppliedJobItemModel;
 import cc.coocol.jinxiujob.models.BaseJobItemModel;
 
-public class AppliedFragment extends Fragment {
+public class AppliedFragment extends BaseFragment {
 
     private RecyclerView recyclerView;
     private SwipeRefreshLayout refreshLayout;
@@ -32,6 +32,11 @@ public class AppliedFragment extends Fragment {
     private AppliedListAdapter adapter;
 
     private List<BaseJobItemModel> jobItemModels;
+
+    @Override
+    public String getTile() {
+        return "我的申请";
+    }
 
     public AppliedFragment() {
 

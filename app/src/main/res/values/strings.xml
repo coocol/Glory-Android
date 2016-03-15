@@ -35,6 +35,7 @@
     <string name="search_hint">搜索职位、企业</string>
 
     <string name="tab_title_all">全部</string>
+    <string name="search">搜索</string>
     <string name="tab_title_hot">热门</string>
     <string name="tab_title_job">职位</string>
     <string name="tab_title_enters">企业</string>

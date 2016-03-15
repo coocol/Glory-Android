@@ -31,12 +31,12 @@ public class EnterpriseFragmentAdapter extends FragmentPagerAdapter {
                 allEnterprisesFragment = new AllEnterprisesFragment();
             }
             return allEnterprisesFragment;
-        } else if (position == 1) {
+        } else if (position == 2) {
             if (nearbyEnterprisesFragment == null) {
                 nearbyEnterprisesFragment = new NearbyEnterprisesFragment();
             }
             return nearbyEnterprisesFragment;
-        } else if (position == 2) {
+        } else if (position == 1) {
             if (hotEnterprisesFragment == null ){
                 hotEnterprisesFragment = new HotEnterprisesFragment();
             }

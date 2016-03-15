@@ -32,10 +32,10 @@ public class HttpClient {
         return gson;
     }
 
+    static {
+    }
+
     private String makeGetArgs(Map<String, Object> args, boolean withToken) {
-//        if (withToken) {
-//            args.put("token", MyConfig.token);
-//        }
         StringBuilder stringBuilder = new StringBuilder();
         for (Map.Entry<String, Object> entry: args.entrySet()) {
             stringBuilder.append(entry.getKey()+ "=" + entry.getValue().toString() + "&");
@@ -44,9 +44,6 @@ public class HttpClient {
     }
 
     private String makePostValues(Map<String, Object> values, boolean withToken) {
-//        if (withToken) {
-//            values.put("token", MyConfig.token);
-//        }
         return gson.toJson(values);
     }
 

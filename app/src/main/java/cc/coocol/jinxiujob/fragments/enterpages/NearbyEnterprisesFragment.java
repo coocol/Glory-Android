@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,35 +15,68 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.google.gson.reflect.TypeToken;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cc.coocol.jinxiujob.R;
+import cc.coocol.jinxiujob.activities.MainActivity;
 import cc.coocol.jinxiujob.adapters.EnterprisesListAdapter;
+import cc.coocol.jinxiujob.configs.MyConfig;
 import cc.coocol.jinxiujob.enums.EntersListType;
+import cc.coocol.jinxiujob.fragments.BaseFragment;
+import cc.coocol.jinxiujob.gsons.ResponseStatus;
 import cc.coocol.jinxiujob.models.AllEnterItemModel;
 import cc.coocol.jinxiujob.models.AllJobItemModel;
 import cc.coocol.jinxiujob.models.BaseEnterItemModel;
 import cc.coocol.jinxiujob.models.HotEnterItemModel;
 import cc.coocol.jinxiujob.models.NearbyEnterItemModel;
+import cc.coocol.jinxiujob.models.NearbyJobItemModel;
+import cc.coocol.jinxiujob.networks.HttpClient;
+import cc.coocol.jinxiujob.networks.URL;
 
-public class NearbyEnterprisesFragment extends Fragment implements EnterprisesListAdapter.OnLastItemVisibleListener {
+public class NearbyEnterprisesFragment extends BaseFragment implements
+        EnterprisesListAdapter.OnLastItemVisibleListener,
+        SwipeRefreshLayout.OnRefreshListener {
 
     private SwipeRefreshLayout refreshLayout;
     private RecyclerView recyclerView;
     private EnterprisesListAdapter adapter;
 
-    private List<BaseEnterItemModel> enterItemModels;
+    private List<BaseEnterItemModel> enterItemModels = new ArrayList<>();
+
+    private static final int GET_SUCCESS = 8;
+    private static final int NO_MORE = 43;
+
+    private int startId = 0;
+
+    private MainActivity activity;
+
+    private int REFRESH = 77;
+    private int GET_MORE = 99;
+
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case NO_MORE:
+                    activity.showSimpleSnack("没有更多数据", activity);
+                    break;
+                case GET_SUCCESS:
+                    adapter.notifyDataSetChanged();
+                    break;
+            }
+            refreshLayout.setRefreshing(false);
+        }
+    };
+
 
     public NearbyEnterprisesFragment() {
-
-        enterItemModels = new ArrayList<>();
-
-        for (int i = 0; i < 7; i++) {
-            enterItemModels.add(new NearbyEnterItemModel());
-        }
     }
 
     public static NearbyEnterprisesFragment newInstance(String param1, String param2) {
@@ -52,6 +87,7 @@ public class NearbyEnterprisesFragment extends Fragment implements EnterprisesLi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        activity = (MainActivity) getActivity();
     }
 
     @Override
@@ -60,6 +96,7 @@ public class NearbyEnterprisesFragment extends Fragment implements EnterprisesLi
 
         View view = inflater.inflate(R.layout.fragment_nearby_enters, container, false);
         refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh_layout);
+        refreshLayout.setOnRefreshListener(this);
         recyclerView = (RecyclerView) view.findViewById(R.id.recyle_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).color(Color.TRANSPARENT).size(12).build());
@@ -69,11 +106,88 @@ public class NearbyEnterprisesFragment extends Fragment implements EnterprisesLi
         return view;
     }
 
-    public void onButtonPressed(Uri uri) {
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (enterItemModels == null || enterItemModels.size() == 0) {
+            refreshLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    refreshLayout.setRefreshing(true);
+                }
+            });
+            requestNearbyEnters(REFRESH);
+        }
+    }
+
+
+    public void requestNearbyEnters(final int type) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Map<String, Object> m = new HashMap<>(4);
+                m.put("type", "nearby");
+                if (type == GET_MORE) {
+                    m.put("start_id", startId);
+                }
+                m.put("city_id", MyConfig.cityId);
+                m.put("lat", 30.550107);
+                m.put("lng", 114.368688);
+                ResponseStatus responseStatus = new HttpClient().get(URL.ALL_ENTERPRISES, m, false);
+                if (responseStatus != null && responseStatus.getStatus() != null &&
+                        responseStatus.getStatus().equals("success")) {
+                    List<NearbyEnterItemModel> models = null;
+                    try{
+                        models = HttpClient.getGson().fromJson(responseStatus.getData(),
+                                new TypeToken<ArrayList<NearbyEnterItemModel>>() {
+                                }.getType());
+                    }catch (Exception c) {
+                        c.toString();
+                    }
+                    if (type == REFRESH) {
+                        if (models != null) {
+                            enterItemModels.clear();
+                            for (NearbyEnterItemModel enterItemModel : models) {
+                                enterItemModels.add(enterItemModel);
+                            }
+                            if (enterItemModels.size() > 0) {
+                                startId = enterItemModels.size();
+                            }
+                            handler.sendEmptyMessage(GET_SUCCESS);
+                        }
+                    } else if (type == GET_MORE) {
+                        if (models == null || models.size() == 0) {
+                            handler.sendEmptyMessage(NO_MORE);
+                        } else {
+                            for (NearbyEnterItemModel enterItemModel : models) {
+                                enterItemModels.add(enterItemModel);
+                            }
+                            if (enterItemModels.size() > 0) {
+                                startId = enterItemModels.size();
+                            }
+                            handler.sendEmptyMessage(GET_SUCCESS);
+                        }
+                    }
+                }
+            }
+        }).start();
+    }
+
+    @Override
+    public String getTile() {
+        return null;
+    }
+
+
+    @Override
+    public void onRefresh() {
+        requestNearbyEnters(REFRESH);
     }
 
     @Override
     public void loadMore() {
-
+        requestNearbyEnters(GET_MORE);
     }
+
+
 }

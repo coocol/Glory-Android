@@ -15,6 +15,7 @@ import java.util.Map;
 
 import cc.coocol.jinxiujob.R;
 import cc.coocol.jinxiujob.configs.MyConfig;
+import cc.coocol.jinxiujob.fragments.BaseFragment;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
@@ -57,7 +58,28 @@ public abstract class BaseActivity extends AppCompatActivity {
         transaction.commit();
         lastFragment = currentFragment;
         currentFragment = fragment;
+        if (lastFragment == null) {
+            lastFragment = currentFragment;
+        }
+        try {
+            String t = ((BaseFragment)fragment).getTile();
+            if (t != null) {
+                getSupportActionBar().setTitle(t);
+            }
+        } catch (Exception e) {
+
+        }
+
     }
+
+    public void hideFragment(Fragment fragment) {
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        if (fragment != null && fragment.isAdded()) {
+            transaction.hide(currentFragment);
+        }
+        transaction.commit();
+    }
+
 
     public void showFragment(Fragment fragment, int titleRes) {
         if (currentFragment == fragment) {
@@ -66,6 +88,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(getResources().getString(titleRes));
         showFragment(fragment);
     }
+
 
     public void showSimpleSnack(String content, Activity targetActivity) {
         com.nispok.snackbar.Snackbar.with(this).text(content).show(targetActivity);

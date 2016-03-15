@@ -15,11 +15,16 @@ import cc.coocol.jinxiujob.adapters.EnterpriseFragmentAdapter;
 import cc.coocol.jinxiujob.adapters.JobFragmentAdapter;
 
 
-public class EnterpriseFragment extends Fragment {
+public class EnterpriseFragment extends BaseFragment {
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private EnterpriseFragmentAdapter adapter;
+
+    @Override
+    public String getTile() {
+        return "企业";
+    }
 
     public EnterpriseFragment() {
     }

@@ -30,6 +30,11 @@ public class NewPasswordFragment extends BaseFragment implements View.OnClickLis
 
     private String password;
 
+    @Override
+    public String getTile() {
+        return null;
+    }
+
     public NewPasswordFragment() {
     }
 

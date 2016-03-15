@@ -21,6 +21,11 @@ public class CollectedFragment extends BaseFragment {
     private CollectededFragmentAdapter adapter;
 
 
+    @Override
+    public String getTile() {
+        return "我的收藏";
+    }
+
     public CollectedFragment() {
 
     }

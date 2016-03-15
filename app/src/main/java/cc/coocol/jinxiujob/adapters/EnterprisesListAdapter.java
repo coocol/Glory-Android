@@ -74,7 +74,14 @@ public class EnterprisesListAdapter extends RecyclerView.Adapter<EnterprisesList
         } else {
             holder.addrTextView.setText(model.getAddress());
         }
-        holder.nameTextView.setText(model.getName());
+
+        if (model.getNick() != null) {
+            holder.nickTextView.setText(model.getNick());
+            holder.nameTextView.setVisibility(View.VISIBLE);
+            holder.nameTextView.setText(model.getName());
+        } else {
+            holder.nickTextView.setText(model.getName());
+        }
         if (entersListType == EntersListType.AllEnters) {
             holder.optionTextView.setText(model.getTime());
         } else if (entersListType == EntersListType.HotEnters) {
@@ -95,6 +102,7 @@ public class EnterprisesListAdapter extends RecyclerView.Adapter<EnterprisesList
         public TextView nameTextView;
         public TextView addrTextView;
         public TextView optionTextView;
+        public TextView nickTextView;
 
         public PlaceHolder(View itemView) {
             super(itemView);
@@ -102,7 +110,7 @@ public class EnterprisesListAdapter extends RecyclerView.Adapter<EnterprisesList
             nameTextView = (TextView) itemView.findViewById(R.id.name);
             addrTextView = (TextView) itemView.findViewById(R.id.addr);
             logoImageView = (SimpleDraweeView) itemView.findViewById(R.id.logo);
-
+            nickTextView = (TextView) itemView.findViewById(R.id.nick);
         }
     }
 

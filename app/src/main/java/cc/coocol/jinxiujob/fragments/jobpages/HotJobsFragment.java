@@ -25,6 +25,7 @@ import cc.coocol.jinxiujob.activities.MainActivity;
 import cc.coocol.jinxiujob.adapters.JobsListAdapter;
 import cc.coocol.jinxiujob.configs.MyConfig;
 import cc.coocol.jinxiujob.enums.JobListType;
+import cc.coocol.jinxiujob.fragments.BaseFragment;
 import cc.coocol.jinxiujob.gsons.ResponseStatus;
 import cc.coocol.jinxiujob.models.BaseJobItemModel;
 import cc.coocol.jinxiujob.models.HotJobItemModel;
@@ -32,9 +33,10 @@ import cc.coocol.jinxiujob.networks.HttpClient;
 import cc.coocol.jinxiujob.networks.URL;
 
 
-public class HotJobsFragment extends Fragment implements
+public class HotJobsFragment extends BaseFragment implements
         SwipeRefreshLayout.OnRefreshListener,
         JobsListAdapter.OnLastItemVisibleListener {
+
 
 
     private SwipeRefreshLayout refreshLayout;
@@ -69,6 +71,11 @@ public class HotJobsFragment extends Fragment implements
             refreshLayout.setRefreshing(false);
         }
     };
+
+    @Override
+    public String getTile() {
+        return null;
+    }
 
 
     public HotJobsFragment() {

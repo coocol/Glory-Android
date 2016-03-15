@@ -14,11 +14,16 @@ import cc.coocol.jinxiujob.R;
 import cc.coocol.jinxiujob.adapters.JobFragmentAdapter;
 
 
-public class JobFragment extends Fragment {
+public class JobFragment extends BaseFragment {
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private JobFragmentAdapter adapter;
+
+    @Override
+    public String getTile() {
+        return "职位";
+    }
 
     public JobFragment() {
 

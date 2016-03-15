@@ -48,6 +48,11 @@ public class RegisterFragment extends BaseFragment implements View.OnClickListen
 
     MyTask<String, ResponseStatus, ResponseStatus> myTask;
 
+    @Override
+    public String getTile() {
+        return null;
+    }
+
     public RegisterFragment() {
     }
 

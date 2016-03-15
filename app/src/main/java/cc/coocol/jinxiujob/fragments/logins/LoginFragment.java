@@ -25,6 +25,11 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
     private String phone;
     private String password;
 
+    @Override
+    public String getTile() {
+        return null;
+    }
+
     public LoginFragment() {
     }
 

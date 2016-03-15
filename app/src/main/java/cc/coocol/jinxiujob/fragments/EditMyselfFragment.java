@@ -16,6 +16,11 @@ public class EditMyselfFragment extends BaseFragment{
     }
 
     @Override
+    public String getTile() {
+        return "编辑资料";
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }

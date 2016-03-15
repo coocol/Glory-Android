@@ -5,16 +5,21 @@ package cc.coocol.jinxiujob.models;
  */
 public class NearbyJobItemModel extends BaseJobItemModel{
 
-    private int distance;
+    private double distance;
 
     public NearbyJobItemModel() {
     }
 
-    public int getDistance() {
+    public NearbyJobItemModel(int id, String name, String company, int companyId, String address, String content, String nick, int collect, int apply, boolean available, String requirement, String description, String salary, int category, String time, double distance) {
+        super(id, name, company, companyId, address, content, nick, collect, apply, available, requirement, description, salary, category, time);
+        this.distance = distance;
+    }
+
+    public double getDistance() {
         return distance;
     }
 
-    public void setDistance(int distance) {
+    public void setDistance(double distance) {
         this.distance = distance;
     }
 }

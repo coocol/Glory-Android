@@ -5,17 +5,22 @@ package cc.coocol.jinxiujob.models;
  */
 public class NearbyEnterItemModel extends BaseEnterItemModel {
 
-    private int distance;
-
+    private double distance;
 
     public NearbyEnterItemModel() {
+
     }
 
-    public int getDistance() {
+    public NearbyEnterItemModel(int id, String name, String nick, String address, String time, int companyId, double distance) {
+        super(id, name, nick, address, time, companyId);
+        this.distance = distance;
+    }
+
+    public double getDistance() {
         return distance;
     }
 
-    public void setDistance(int distance) {
+    public void setDistance(double distance) {
         this.distance = distance;
     }
 }

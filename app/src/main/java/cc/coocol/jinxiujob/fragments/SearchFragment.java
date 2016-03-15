@@ -13,13 +13,20 @@ import android.view.ViewGroup;
 import cc.coocol.jinxiujob.R;
 import cc.coocol.jinxiujob.adapters.JobFragmentAdapter;
 import cc.coocol.jinxiujob.adapters.SearchFragmentAdapter;
+import cc.coocol.jinxiujob.fragments.searchpages.SearchEntersFragment;
+import cc.coocol.jinxiujob.fragments.searchpages.SearchJobsFragment;
 
 
-public class SearchFragment extends Fragment {
+public class SearchFragment extends BaseFragment {
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private SearchFragmentAdapter adapter;
+
+    @Override
+    public String getTile() {
+        return "搜索";
+    }
 
     public SearchFragment() {
 
@@ -88,4 +95,16 @@ public class SearchFragment extends Fragment {
         return view;
     }
 
+    public void startQuery(String query) {
+        ((SearchJobsFragment)adapter.getItem(0)).search(query);
+        ((SearchEntersFragment)adapter.getItem(1)).search(query);
+//        if (tabLayout.getSelectedTabPosition() == 0) {
+//            ((SearchJobsFragment)adapter.getItem(0)).setQuery(query);
+//            ((SearchJobsFragment)adapter.getItem(0)).search(query);
+//        } else if (tabLayout.getSelectedTabPosition() == 1) {
+//            ((SearchEntersFragment)adapter.getItem(1)).setQuery(query);
+//            ((SearchEntersFragment)adapter.getItem(1)).search(query);
+//        }
+
+    }
 }

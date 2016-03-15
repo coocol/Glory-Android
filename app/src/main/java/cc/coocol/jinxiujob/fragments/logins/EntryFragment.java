@@ -18,6 +18,11 @@ public class EntryFragment extends BaseFragment implements View.OnClickListener 
     private RoundFrameLayout registerLayout;
     private RoundFrameLayout loginLayout;
 
+    @Override
+    public String getTile() {
+        return null;
+    }
+
     public EntryFragment() {
     }
 

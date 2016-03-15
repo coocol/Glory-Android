@@ -23,18 +23,24 @@ import cc.coocol.jinxiujob.adapters.EnterprisesListAdapter;
 import cc.coocol.jinxiujob.adapters.JobsListAdapter;
 import cc.coocol.jinxiujob.enums.EntersListType;
 import cc.coocol.jinxiujob.enums.JobListType;
+import cc.coocol.jinxiujob.fragments.BaseFragment;
 import cc.coocol.jinxiujob.models.BaseEnterItemModel;
 import cc.coocol.jinxiujob.models.BaseJobItemModel;
 import cc.coocol.jinxiujob.models.HotJobItemModel;
 
 
-public class CollectedJobsFragment extends Fragment implements JobsListAdapter.OnLastItemVisibleListener {
+public class CollectedJobsFragment extends BaseFragment implements JobsListAdapter.OnLastItemVisibleListener {
 
     private SwipeRefreshLayout refreshLayout;
     private RecyclerView recyclerView;
     private JobsListAdapter adapter;
 
     private List<BaseJobItemModel> jobItemModels;
+
+    @Override
+    public String getTile() {
+        return null;
+    }
 
     public CollectedJobsFragment() {
 

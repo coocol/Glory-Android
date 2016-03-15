@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -19,6 +20,7 @@ import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import cc.coocol.jinxiujob.R;
 import cc.coocol.jinxiujob.configs.MyConfig;
 import cc.coocol.jinxiujob.fragments.AppliedFragment;
+import cc.coocol.jinxiujob.fragments.BaseFragment;
 import cc.coocol.jinxiujob.fragments.CollectedFragment;
 import cc.coocol.jinxiujob.fragments.EnterpriseFragment;
 import cc.coocol.jinxiujob.fragments.JobFragment;
@@ -40,6 +42,7 @@ public class MainActivity extends BaseActivity
     private MaterialSearchView searchView;
     private NavigationView navigationView;
     private DrawerLayout drawer;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,8 +82,14 @@ public class MainActivity extends BaseActivity
         if (id == R.id.action_settings) {
             return true;
         }
+        if (id == R.id.action_search) {
+            if (currentFragment != searchFragment) {
+                searchView.showSearch();
+            }
+        }
         return super.onOptionsItemSelected(item);
     }
+
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -162,17 +171,25 @@ public class MainActivity extends BaseActivity
         searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                if (query != null && !query.equals("")) {
+                    if (searchFragment != null) {
+                        searchFragment.startQuery(query);
+                        return true;
+                    }
+                }
                 return false;
             }
 
+
             @Override
             public boolean onQueryTextChange(String newText) {
-                return false;
+                return true;
             }
         });
         searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
             @Override
             public void onSearchViewShown() {
+
                 FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
                         FrameLayout.LayoutParams.WRAP_CONTENT,
                         FrameLayout.LayoutParams.WRAP_CONTENT
@@ -182,7 +199,7 @@ public class MainActivity extends BaseActivity
                 if (searchFragment == null) {
                     searchFragment = SearchFragment.newInstance("", "");
                 }
-                showFragment(searchFragment);
+                showFragment(searchFragment, R.string.search);
             }
 
             @Override

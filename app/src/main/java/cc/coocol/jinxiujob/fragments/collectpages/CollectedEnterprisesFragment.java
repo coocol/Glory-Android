@@ -21,11 +21,12 @@ import java.util.List;
 import cc.coocol.jinxiujob.R;
 import cc.coocol.jinxiujob.adapters.EnterprisesListAdapter;
 import cc.coocol.jinxiujob.enums.EntersListType;
+import cc.coocol.jinxiujob.fragments.BaseFragment;
 import cc.coocol.jinxiujob.models.AllEnterItemModel;
 import cc.coocol.jinxiujob.models.BaseEnterItemModel;
 
 
-public class CollectedEnterprisesFragment extends Fragment implements EnterprisesListAdapter.OnLastItemVisibleListener {
+public class CollectedEnterprisesFragment extends BaseFragment implements EnterprisesListAdapter.OnLastItemVisibleListener {
 
 
     private SwipeRefreshLayout refreshLayout;
@@ -33,6 +34,11 @@ public class CollectedEnterprisesFragment extends Fragment implements Enterprise
     private EnterprisesListAdapter adapter;
 
     private List<BaseEnterItemModel> enterItemModels;
+
+    @Override
+    public String getTile() {
+        return null;
+    }
 
     public CollectedEnterprisesFragment() {
 

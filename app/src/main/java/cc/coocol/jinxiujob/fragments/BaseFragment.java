@@ -10,6 +10,8 @@ import cc.coocol.jinxiujob.R;
 
 public abstract class BaseFragment extends Fragment {
 
+    public abstract String getTile();
+
     public BaseFragment() {
     }
 

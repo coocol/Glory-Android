@@ -43,6 +43,11 @@ public class SmsCodeFragment extends BaseFragment implements View.OnClickListene
 
     MyTask<String, ResponseStatus, ResponseStatus> myTask;
 
+    @Override
+    public String getTile() {
+        return null;
+    }
+
     public SmsCodeFragment() {
     }
 
