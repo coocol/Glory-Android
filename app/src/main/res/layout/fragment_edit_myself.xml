@@ -1,0 +1,131 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:padding="12dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="cc.coocol.jinxiujob.fragments.SettingsFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:scrollbars="none"
+        android:id="@+id/paralax_scroll"
+        app:layout_behavior="@string/navigation_item_job"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <android.support.v7.widget.CardView
+                android:foreground="@drawable/card_back"
+                android:clickable="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:background="@color/background"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:id="@+id/head_layout"
+                        android:background="@android:color/white"
+                        android:gravity="center_vertical"
+                        android:layout_height="56dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:text="头像"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentStart="true" />
+
+                        <com.makeramen.roundedimageview.RoundedImageView
+                            android:id="@+id/head_image"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/ic_user"
+                            app:riv_border_color="#ffffff"
+                            app:riv_border_width="2dip"
+                            android:layout_alignParentRight="true"
+                            app:riv_corner_radius="0dip"
+                            app:riv_mutate_background="true"
+                            app:riv_oval="true" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:id="@+id/nick_layout"
+                        android:background="@android:color/white"
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="1dp"
+                        android:layout_height="48dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:text="用户昵称"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentLeft="true" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:id="@+id/nick"
+                            android:text="说过的热"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentEnd="true" />
+
+                    </RelativeLayout>
+
+
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:id="@+id/gender_layout"
+                        android:background="@android:color/white"
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="1dp"
+                        android:layout_height="48dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:text="性别"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentLeft="true" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:id="@+id/gender"
+                            android:text="男"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentEnd="true" />
+
+                    </RelativeLayout>
+
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+
+        </LinearLayout>
+
+
+    </ScrollView>
+
+
+</FrameLayout>

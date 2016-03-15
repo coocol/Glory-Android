@@ -2,6 +2,7 @@
 *.apk
 *.ap_
 
+
 # Files for the Dalvik VM
 *.dex
 
@@ -11,6 +12,15 @@
 # Generated files
 bin/
 gen/
+app/build/
+app/src/test/
+app/src/androidTest/
+
+# Libs
+app/libs/
+
+# IDEA files
+.idea/
 
 # Gradle files
 .gradle/

@@ -1,0 +1,96 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="cc.coocol.jinxiujob.fragments.passwords.SmsCodeFragment">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="96dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingLeft="36dp"
+        android:paddingRight="36dp">
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/phone"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_gravity="center_horizontal"
+            android:editable="true"
+            android:ems="10"
+            android:hint="输入电话号码"
+            android:inputType="phone"
+            android:textColor="@android:color/black"
+            android:textColorHint="@color/entry_hint_dark" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/code"
+                android:layout_width="156dp"
+                android:layout_height="48dp"
+                android:autoText="false"
+                android:ems="10"
+                android:hint="输入验证码"
+                android:inputType="number"
+                android:textColor="@android:color/black"
+                android:textColorHint="@color/entry_hint_dark" />
+
+            <com.flyco.roundview.RoundFrameLayout
+                android:id="@+id/recode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="12dp"
+                android:padding="4dp"
+                app:rv_backgroundColor="@color/colorPrimary"
+                app:rv_cornerRadius="60dp">
+
+                <TextView
+                    android:id="@+id/recode_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:paddingBottom="1dp"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
+                    android:paddingTop="1dp"
+                    android:text="发送验证码"
+                    android:textColor="@android:color/white" />
+            </com.flyco.roundview.RoundFrameLayout>
+
+        </LinearLayout>
+
+        <com.flyco.roundview.RoundFrameLayout
+            android:id="@+id/go"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:padding="8dp"
+            app:rv_backgroundColor="@color/colorPrimary"
+            app:rv_cornerRadius="60dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="确定"
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
+
+        </com.flyco.roundview.RoundFrameLayout>
+
+
+    </LinearLayout>
+</FrameLayout>

@@ -1,0 +1,79 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/app_back"
+    tools:context=".fragments.logins.EntryFragment">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:descendantFocusability="blocksDescendants"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="120dp"
+            android:src="@drawable/app_name_logo"/>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="32dp"
+            android:layout_alignParentBottom="true"
+            android:descendantFocusability="blocksDescendants"
+            android:layout_marginBottom="48dp"
+            android:paddingRight="32dp">
+
+
+            <com.flyco.roundview.RoundFrameLayout
+                android:layout_width="120dp"
+                app:rv_strokeColor="#ffffff"
+                app:rv_strokeWidth="1dp"
+                android:id="@+id/register"
+                android:descendantFocusability="blocksDescendants"
+                android:layout_alignParentLeft="true"
+                android:layout_height="48dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:text="注册"
+                    android:textSize="20sp"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:textColor="@android:color/white"
+                    android:layout_height="match_parent" />
+
+            </com.flyco.roundview.RoundFrameLayout>
+
+            <com.flyco.roundview.RoundFrameLayout
+                android:layout_width="120dp"
+                app:rv_strokeColor="#ffffff"
+                app:rv_strokeWidth="1dp"
+                android:descendantFocusability="blocksDescendants"
+                android:id="@+id/login"
+                android:layout_alignParentRight="true"
+                android:layout_height="48dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:text="登录"
+                    android:textSize="20sp"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:textColor="@android:color/white"
+                    android:layout_height="match_parent" />
+
+            </com.flyco.roundview.RoundFrameLayout>
+
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+
+</FrameLayout>
