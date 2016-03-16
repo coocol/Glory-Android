@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="cc.coocol.jinxiujob.activities.CompanyDetailActivity"
+    tools:showIn="@layout/activity_company_detail">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/logo"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_user"
+                fresco:roundAsCircle="true"
+                fresco:roundingBorderColor="@android:color/white"
+                fresco:roundingBorderWidth="2dp" />
+
+
+            <TextView
+                android:id="@+id/nick"
+                android:layout_marginTop="2dp"
+                android:layout_width="wrap_content"
+                android:textColor="@android:color/white"
+                android:layout_height="wrap_content"
+                android:text="谢向飞" />
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_marginTop="1dp"
+                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="找一份码农的工作" />
+
+        </LinearLayout>
+
+
+
+
+        <include
+            layout="@layout/tab_pager"/>
+
+
+</LinearLayout>

@@ -23,6 +23,13 @@ public class URL {
 
     public static final String ALL_ENTERPRISES = "enterprises";
 
-    public static final String COMPANY_LOGO = ROOT_PATH + "static/logo/";
+    public static final String ENTERPRISE = "enterprise/";
+
+    public static final String JOB = "job/";
+
+    public static final String USER_HEADER = "user/";
+
+
+    public static final String COMPANY_LOGO = "http://115.28.22.98/api/v1.0/static/logo/";
     public static final String USER_PHOTO = ROOT_PATH + "static/head/";
 }

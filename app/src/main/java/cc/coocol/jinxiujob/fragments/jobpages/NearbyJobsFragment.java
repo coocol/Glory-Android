@@ -1,6 +1,7 @@
 package cc.coocol.jinxiujob.fragments.jobpages;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 
 import cc.coocol.jinxiujob.R;
+import cc.coocol.jinxiujob.activities.CompanyDetailActivity;
+import cc.coocol.jinxiujob.activities.JobDetailActivity;
 import cc.coocol.jinxiujob.activities.MainActivity;
 import cc.coocol.jinxiujob.adapters.JobsListAdapter;
 import cc.coocol.jinxiujob.configs.MyConfig;
@@ -104,6 +107,20 @@ public class NearbyJobsFragment extends BaseFragment implements JobsListAdapter.
         recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).color(Color.TRANSPARENT).size(12).build());
         refreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorPrimary));
         adapter = new JobsListAdapter(getContext(), jobItemModels, JobListType.NearbyJob, this);
+        adapter.setOnItemClickListener(new JobsListAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v) {
+                if (v.getId() == R.id.company) {
+                    Intent intent = new Intent(getContext(), CompanyDetailActivity.class);
+                    intent.putExtra("company_id", (int)v.getTag());
+                    startActivity(intent);
+                } else if (v.getId() == R.id.container) {
+                    Intent intent = new Intent(getContext(), JobDetailActivity.class);
+                    intent.putExtra("job_id", (int)v.getTag());
+                    startActivity(intent);
+                }
+            }
+        });
         recyclerView.setAdapter(adapter);
         return view;
     }

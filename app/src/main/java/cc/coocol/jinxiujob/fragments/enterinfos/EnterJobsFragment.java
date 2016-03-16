@@ -1,11 +1,10 @@
-package cc.coocol.jinxiujob.fragments.jobpages;
+package cc.coocol.jinxiujob.fragments.enterinfos;
 
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,38 +24,38 @@ import cc.coocol.jinxiujob.R;
 import cc.coocol.jinxiujob.activities.CompanyDetailActivity;
 import cc.coocol.jinxiujob.activities.JobDetailActivity;
 import cc.coocol.jinxiujob.activities.MainActivity;
+import cc.coocol.jinxiujob.adapters.EnterJobsListAdapter;
 import cc.coocol.jinxiujob.adapters.JobsListAdapter;
 import cc.coocol.jinxiujob.configs.MyConfig;
 import cc.coocol.jinxiujob.enums.JobListType;
 import cc.coocol.jinxiujob.fragments.BaseFragment;
 import cc.coocol.jinxiujob.gsons.ResponseStatus;
+import cc.coocol.jinxiujob.models.AllJobItemModel;
 import cc.coocol.jinxiujob.models.BaseJobItemModel;
-import cc.coocol.jinxiujob.models.HotJobItemModel;
 import cc.coocol.jinxiujob.networks.HttpClient;
 import cc.coocol.jinxiujob.networks.URL;
 
 
-public class HotJobsFragment extends BaseFragment implements
+public class EnterJobsFragment extends BaseFragment implements
         SwipeRefreshLayout.OnRefreshListener,
-        JobsListAdapter.OnLastItemVisibleListener {
-
+        EnterJobsListAdapter.OnLastItemVisibleListener {
 
 
     private SwipeRefreshLayout refreshLayout;
     private RecyclerView recyclerView;
-    private JobsListAdapter adapter;
-
-    private List<BaseJobItemModel> hotJobItemModels = new ArrayList<>();
+    private EnterJobsListAdapter adapter;
 
     private static final int GET_JOBS_SUCCESS = 8;
     private static final int NO_MORE = 43;
 
-    private int startId = 0;
+    private int startJobId = 0;
+
+    private int enterpriseId = -1;
 
     private int REFRESH = 77;
     private int GET_MORE = 99;
 
-    private MainActivity activity;
+    private CompanyDetailActivity activity;
 
     private Handler handler = new Handler(){
         @Override
@@ -75,52 +74,46 @@ public class HotJobsFragment extends BaseFragment implements
         }
     };
 
+    private List<BaseJobItemModel> jobItemModels = new ArrayList<>();
+
     @Override
     public String getTile() {
         return null;
     }
 
 
-    public HotJobsFragment() {
-
+    public EnterJobsFragment() {
     }
 
-
-    public static HotJobsFragment newInstance(String param1, String param2) {
-        HotJobsFragment fragment = new HotJobsFragment();
+    public static EnterJobsFragment newInstance(String param1, String param2) {
+        EnterJobsFragment fragment = new EnterJobsFragment();
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        activity = (MainActivity) getActivity();
+        activity = (CompanyDetailActivity) getActivity();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_hot_jobs, container, false);
+        View view = inflater.inflate(R.layout.fragment_enter_jobs, container, false);
         refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh_layout);
-        refreshLayout.setOnRefreshListener(this);
         recyclerView = (RecyclerView) view.findViewById(R.id.recyle_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).color(Color.TRANSPARENT).size(12).build());
         refreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorPrimary));
-        hotJobItemModels = new ArrayList<>();
-        adapter = new JobsListAdapter(getContext(), hotJobItemModels, JobListType.HotJob, this);
-        adapter.setOnItemClickListener(new JobsListAdapter.OnItemClickListener() {
+        refreshLayout.setOnRefreshListener(this);
+        adapter = new EnterJobsListAdapter(getContext(), jobItemModels, this);
+        adapter.setOnItemClickListener(new EnterJobsListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View v) {
-                if (v.getId() == R.id.company) {
-                    Intent intent = new Intent(getContext(), CompanyDetailActivity.class);
-                    intent.putExtra("company_id", (int)v.getTag());
-                    startActivity(intent);
-                } else if (v.getId() == R.id.container) {
+                if (v.getId() == R.id.container) {
                     Intent intent = new Intent(getContext(), JobDetailActivity.class);
-                    intent.putExtra("job_id", (int)v.getTag());
+                    intent.putExtra("job_id", (int) v.getTag());
                     startActivity(intent);
                 }
             }
@@ -132,51 +125,56 @@ public class HotJobsFragment extends BaseFragment implements
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (hotJobItemModels == null || hotJobItemModels.size() == 0) {
+        enterpriseId = activity.getEnterpriseId();
+        if (jobItemModels == null || jobItemModels.size() == 0) {
             refreshLayout.post(new Runnable() {
                 @Override
                 public void run() {
                     refreshLayout.setRefreshing(true);
                 }
             });
-            requestHotJobs(REFRESH);
+            requestEnterJobs(REFRESH);
         }
     }
 
-    public void requestHotJobs(final int type) {
+    @Override
+    public void onRefresh() {
+        requestEnterJobs(REFRESH);
+    }
+
+    public void requestEnterJobs(final int type) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 Map<String, Object> m = new HashMap<>(4);
-                m.put("type", "hot");
-                if (type == GET_MORE) {
-                    m.put("start_id", startId);
-                }
-                m.put("city_id", MyConfig.cityId);
-                ResponseStatus responseStatus = new HttpClient().get(URL.ALL_JOBS, m, false);
+                m.put("start_id", startJobId);
+                m.put("enterprise_id", enterpriseId);
+                ResponseStatus responseStatus = new HttpClient().get(URL.ENTERPRISE + enterpriseId + "/jobs", m, false);
                 if (responseStatus != null && responseStatus.getStatus() != null &&
                         responseStatus.getStatus().equals("success")) {
-                    List<HotJobItemModel> models = HttpClient.getGson().fromJson(responseStatus.getData(),
-                            new TypeToken<ArrayList<HotJobItemModel>>(){}.getType());
+                    List<AllJobItemModel> models = HttpClient.getGson().fromJson(responseStatus.getData(),
+                            new TypeToken<ArrayList<AllJobItemModel>>(){}.getType());
                     if (type == REFRESH) {
                         if (models != null) {
-                            hotJobItemModels.clear();
-                            for (HotJobItemModel hotJobItemModel: models) {
-                                hotJobItemModels.add(hotJobItemModel);
+                            jobItemModels.clear();
+                            for (AllJobItemModel allJobItemModel: models) {
+                                jobItemModels.add(allJobItemModel);
                             }
-                            startId = hotJobItemModels.size();
+                            if (jobItemModels.size() > 0) {
+                                startJobId = jobItemModels.get(jobItemModels.size() - 1).getId();
+                            }
                             handler.sendEmptyMessage(GET_JOBS_SUCCESS);
-                        } else {
-                            handler.sendEmptyMessage(NO_MORE);
                         }
                     } else if (type == GET_MORE) {
                         if (models == null || models.size() == 0) {
                             handler.sendEmptyMessage(NO_MORE);
                         } else {
-                            for (HotJobItemModel hotJobItemModel: models) {
-                                hotJobItemModels.add(hotJobItemModel);
+                            for (AllJobItemModel allJobItemModel: models) {
+                                jobItemModels.add(allJobItemModel);
                             }
-                            startId = hotJobItemModels.size();
+                            if (jobItemModels.size() > 0) {
+                                startJobId = jobItemModels.get(jobItemModels.size() - 1).getId();
+                            }
                             handler.sendEmptyMessage(GET_JOBS_SUCCESS);
                         }
                     }
@@ -185,14 +183,8 @@ public class HotJobsFragment extends BaseFragment implements
         }).start();
     }
 
-
-    @Override
-    public void onRefresh() {
-        requestHotJobs(REFRESH);
-    }
-
     @Override
     public void loadMore() {
-        requestHotJobs(GET_MORE);
+        requestEnterJobs(GET_MORE);
     }
 }

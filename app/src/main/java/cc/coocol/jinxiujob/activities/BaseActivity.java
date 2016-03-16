@@ -3,11 +3,13 @@ package cc.coocol.jinxiujob.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.TypedValue;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
@@ -26,6 +28,16 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected AlertDialog dialog;
 
     MaterialDialog progressDialog;
+
+    protected int getActionBarSize() {
+        TypedValue typedValue = new TypedValue();
+        int[] textSizeAttr = new int[]{R.attr.actionBarSize};
+        int indexOfAttrTextSize = 0;
+        TypedArray a = obtainStyledAttributes(typedValue.data, textSizeAttr);
+        int actionBarSize = a.getDimensionPixelSize(indexOfAttrTextSize, -1);
+        a.recycle();
+        return actionBarSize;
+    }
 
     public void showProgressDialog(String title) {
         progressDialog = new MaterialDialog.Builder(this)

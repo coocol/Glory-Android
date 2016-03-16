@@ -7,9 +7,6 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:clickable="true"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="10dp"
@@ -18,11 +15,9 @@
         <LinearLayout
 
             android:id="@+id/company"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
+            android:background="@drawable/card_back"
             android:orientation="horizontal">
 
             <com.facebook.drawee.view.SimpleDraweeView
@@ -39,10 +34,7 @@
                 android:gravity="center_vertical"
                 android:text="百度"
                 android:layout_marginLeft="12dp"
-                android:textSize="12sp"
-                android:clickable="true"
-                android:focusable="true"
-                android:focusableInTouchMode="true"/>
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/time"
@@ -52,18 +44,12 @@
                 android:gravity="center_vertical|right"
                 android:text="7-13"
                 android:textSize="12sp"
-                android:visibility="invisible"
-                android:clickable="true"
-                android:focusable="true"
-                android:focusableInTouchMode="true"/>
+                android:visibility="invisible" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
             android:orientation="horizontal">
 
             <TextView
@@ -72,9 +58,6 @@
                 android:layout_height="36dp"
                 android:gravity="center_vertical"
                 android:text="人力资源部人事实习生"
-                android:clickable="true"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
                 android:textColor="#000000"
                 android:textSize="16sp"
                 android:layout_marginLeft="24dp" />
@@ -84,9 +67,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="36dp"
                 android:layout_gravity="right"
-                android:clickable="true"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
                 android:gravity="center_vertical|right"
                 android:text="18人申请"
                 android:textSize="12sp"
@@ -98,32 +78,29 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
             android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:src="@drawable/jd_icon_location"
+                android:layout_height="wrap_content" />
 
             <TextView
                 android:id="@+id/job_addr"
                 android:layout_width="wrap_content"
-                android:clickable="true"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:maxLines="2"
                 android:text="湖北省武汉市洪山区珞瑜路"
                 android:textSize="12sp"
-                android:layout_marginLeft="24dp" />
+                />
 
             <TextView
                 android:id="@+id/option"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:clickable="true"
-                android:focusable="true"
                 android:maxLines="1"
-                android:focusableInTouchMode="true"
                 android:layout_gravity="right"
                 android:gravity="center_vertical|right"
                 android:text="距离 120米"

@@ -3,8 +3,9 @@ package cc.coocol.jinxiujob.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -13,20 +14,29 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
 import cc.coocol.jinxiujob.R;
 import cc.coocol.jinxiujob.configs.MyConfig;
 import cc.coocol.jinxiujob.fragments.AppliedFragment;
-import cc.coocol.jinxiujob.fragments.BaseFragment;
 import cc.coocol.jinxiujob.fragments.CollectedFragment;
 import cc.coocol.jinxiujob.fragments.EnterpriseFragment;
 import cc.coocol.jinxiujob.fragments.JobFragment;
 import cc.coocol.jinxiujob.fragments.SearchFragment;
 import cc.coocol.jinxiujob.fragments.SettingsFragment;
+import cc.coocol.jinxiujob.gsons.ResponseStatus;
+import cc.coocol.jinxiujob.models.BaseUserModel;
+import cc.coocol.jinxiujob.models.DetailEnterModel;
+import cc.coocol.jinxiujob.networks.HttpClient;
 import cc.coocol.jinxiujob.networks.URL;
+
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -43,6 +53,31 @@ public class MainActivity extends BaseActivity
     private NavigationView navigationView;
     private DrawerLayout drawer;
 
+    private BaseUserModel userModel;
+
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what == 44) {
+                showSimpleSnack("未能获取用户信息", MainActivity.this);
+            } else if (msg.what == 88) {
+                TextView nickView = (TextView) navigationView.getHeaderView(0).findViewById(R.id.nick);
+                TextView signVIew = (TextView) navigationView.getHeaderView(0).findViewById(R.id.sign);
+                if (userModel.getNick() == null) {
+                    nickView.setText(userModel.getPhone());
+                } else {
+                    nickView.setText(userModel.getPhone());
+                }
+                if (userModel.getSignature() == null) {
+                    signVIew.setText("（尚未编辑数据）");
+                } else {
+                    signVIew.setText(userModel.getSignature());
+                }
+            }
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +86,8 @@ public class MainActivity extends BaseActivity
 
         initView();
         initSearchView();
+
+        requestUserHeader(MyConfig.uid);
     }
 
 
@@ -155,7 +192,7 @@ public class MainActivity extends BaseActivity
         draweeView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, PersonHomeActivity.class));
+
             }
         });
         navigationView.setNavigationItemSelectedListener(this);
@@ -215,5 +252,28 @@ public class MainActivity extends BaseActivity
             }
         });
         searchView.closeSearch();
+    }
+
+    private void requestUserHeader(final int userId) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Map<String, Object>m = new HashMap<>(2);
+                m.put("token", MyConfig.token);
+                ResponseStatus responseStatus = new HttpClient().get(URL.USER_HEADER + userId + "/header" , m, false);
+                if (responseStatus != null && responseStatus.getStatus() != null &&
+                        responseStatus.getStatus().equals("success")) {
+                    userModel = HttpClient.getGson().fromJson(responseStatus.getData(),
+                            BaseUserModel.class);
+                    if (userModel != null) {
+                        handler.sendEmptyMessage(88);
+                    } else {
+                        handler.sendEmptyMessage(44);
+                    }
+                } else  {
+                    handler.sendEmptyMessage(44);
+                }
+            }
+        }).start();
     }
 }

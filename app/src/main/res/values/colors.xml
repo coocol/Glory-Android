@@ -20,6 +20,8 @@
 
     <color name="black_overlay">#66000000</color>
 
+    <color name="black_pressed">#33000000</color>
+
     <!--<color name="scolor">#2c3e54</color>-->
     <color name="scolor">#2c3e54</color>
 
