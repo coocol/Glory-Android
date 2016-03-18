@@ -1,6 +1,7 @@
 package cc.coocol.jinxiujob.fragments.enterpages;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import cc.coocol.jinxiujob.R;
+import cc.coocol.jinxiujob.activities.CompanyDetailActivity;
 import cc.coocol.jinxiujob.activities.MainActivity;
 import cc.coocol.jinxiujob.adapters.EnterprisesListAdapter;
 import cc.coocol.jinxiujob.configs.MyConfig;
@@ -102,6 +104,16 @@ public class NearbyEnterprisesFragment extends BaseFragment implements
         recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).color(Color.TRANSPARENT).size(12).build());
         refreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorPrimary));
         adapter = new EnterprisesListAdapter(getContext(), enterItemModels, EntersListType.NearbyEnters, this);
+        adapter.setOnItemClickListener(new EnterprisesListAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v) {
+                if (v.getId() == R.id.container) {
+                    Intent intent = new Intent(getContext(), CompanyDetailActivity.class);
+                    intent.putExtra("company_id", (int)v.getTag());
+                    startActivity(intent);
+                }
+            }
+        });
         recyclerView.setAdapter(adapter);
         return view;
     }
@@ -131,8 +143,13 @@ public class NearbyEnterprisesFragment extends BaseFragment implements
                     m.put("start_id", startId);
                 }
                 m.put("city_id", MyConfig.cityId);
-                m.put("lat", 30.550107);
-                m.put("lng", 114.368688);
+                if (MyConfig.lat == 0 || MyConfig.lng == 0) {
+                    m.put("lat", MyConfig.lat);
+                    m.put("lng", MyConfig.lng);
+                } else {
+                    m.put("lat", 30.54961);
+                    m.put("lng", 114.37702);
+                }
                 ResponseStatus responseStatus = new HttpClient().get(URL.ALL_ENTERPRISES, m, false);
                 if (responseStatus != null && responseStatus.getStatus() != null &&
                         responseStatus.getStatus().equals("success")) {

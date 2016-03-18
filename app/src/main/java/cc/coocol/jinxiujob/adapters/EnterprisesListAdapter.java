@@ -6,27 +6,22 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.List;
 
 import cc.coocol.jinxiujob.R;
 import cc.coocol.jinxiujob.enums.EntersListType;
-import cc.coocol.jinxiujob.models.AllEnterItemModel;
-import cc.coocol.jinxiujob.models.AllJobItemModel;
 import cc.coocol.jinxiujob.models.BaseEnterItemModel;
 import cc.coocol.jinxiujob.models.HotEnterItemModel;
-import cc.coocol.jinxiujob.models.HotJobItemModel;
 import cc.coocol.jinxiujob.models.NearbyEnterItemModel;
 
 /**
  * Created by raymond on 16-2-28.
  */
-public class EnterprisesListAdapter extends RecyclerView.Adapter<EnterprisesListAdapter.PlaceHolder> {
+public class EnterprisesListAdapter extends RecyclerView.Adapter<EnterprisesListAdapter.PlaceHolder> implements View.OnClickListener {
 
     private Context context;
     private List<BaseEnterItemModel> enterItemModels;
@@ -34,6 +29,24 @@ public class EnterprisesListAdapter extends RecyclerView.Adapter<EnterprisesList
     private EntersListType entersListType;
 
     private OnLastItemVisibleListener lastItemVisibleListener;
+
+    @Override
+    public void onClick(View v) {
+        if (onItemClickListener != null) {
+            onItemClickListener.onItemClick(v);
+        }
+    }
+
+    public static interface OnItemClickListener {
+        void onItemClick(View v);
+    }
+
+    private OnItemClickListener onItemClickListener;
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
+
 
     public EnterprisesListAdapter(Context context, List<BaseEnterItemModel> enterItemModels, EntersListType entersListType, EnterprisesListAdapter.OnLastItemVisibleListener lastItemVisibleListener) {
         this.context = context;
@@ -62,6 +75,7 @@ public class EnterprisesListAdapter extends RecyclerView.Adapter<EnterprisesList
                 context).inflate(R.layout.item_enters_list, parent,
                 false);
         PlaceHolder placeHolder = new PlaceHolder(vIew);
+        vIew.setOnClickListener(this);
         return placeHolder;
     }
 
@@ -87,13 +101,19 @@ public class EnterprisesListAdapter extends RecyclerView.Adapter<EnterprisesList
         } else if (entersListType == EntersListType.HotEnters) {
             holder.optionTextView.setText(((HotEnterItemModel)model).getApply() + "人申请");
         } else if (entersListType == EntersListType.NearbyEnters) {
-            holder.optionTextView.setText("距离" + ((NearbyEnterItemModel) model).getDistance()+"米");
+            double d = ((NearbyEnterItemModel)model).getDistance();
+            if (d >= 1) {
+                holder.optionTextView.setText("距离" + String.format("%.1f" ,d) + "千米");
+            } else {
+                holder.optionTextView.setText("距离" + (int)(d * 10000) + "米");
+            }
         }
-        Uri uri = Uri.parse("http://115.28.22.98/api/v1.0/static/logo/" + model.getCompanyId() + ".jpg");
+        Uri uri = Uri.parse("http://115.28.22.98:7652/api/v1.0/static/logo/" + model.getCompanyId() + ".jpg");
         holder.logoImageView.setImageURI(uri);
         if (enterItemModels.size() > 9 && position == enterItemModels.size() - 1) {
             lastItemVisibleListener.loadMore();
         }
+        holder.cardView.setTag(model.getCompanyId());
     }
 
 
@@ -103,14 +123,16 @@ public class EnterprisesListAdapter extends RecyclerView.Adapter<EnterprisesList
         public TextView addrTextView;
         public TextView optionTextView;
         public TextView nickTextView;
+        public View cardView;
 
         public PlaceHolder(View itemView) {
             super(itemView);
             optionTextView = (TextView) itemView.findViewById(R.id.option);
             nameTextView = (TextView) itemView.findViewById(R.id.name);
             addrTextView = (TextView) itemView.findViewById(R.id.addr);
-            logoImageView = (SimpleDraweeView) itemView.findViewById(R.id.logo);
+            logoImageView = (SimpleDraweeView) itemView.findViewById(R.id.e_logo);
             nickTextView = (TextView) itemView.findViewById(R.id.nick);
+            cardView = itemView;
         }
     }
 

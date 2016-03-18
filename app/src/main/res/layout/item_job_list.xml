@@ -12,68 +12,83 @@
         android:padding="10dp"
         android:orientation="vertical">
 
-        <LinearLayout
+        <RelativeLayout
 
             android:id="@+id/company"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/card_back"
-            android:orientation="horizontal">
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:background="@drawable/card_back">
 
             <com.facebook.drawee.view.SimpleDraweeView
-                android:id="@+id/logo"
+                android:id="@+id/logo_image"
                 fresco:roundAsCircle="true"
                 android:layout_width="24dp"
+                android:layout_alignParentStart="true"
                 android:layout_height="24dp"
                 android:scaleType="fitXY" />
 
             <TextView
                 android:id="@+id/company_name"
                 android:layout_width="wrap_content"
-                android:layout_height="28dp"
-                android:gravity="center_vertical"
-                android:text="百度"
+                android:layout_height="wrap_content"
+                android:text="Company"
+                android:textSize="12sp"
                 android:layout_marginLeft="12dp"
-                android:textSize="12sp" />
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/logo_image" />
 
             <TextView
                 android:id="@+id/time"
-                android:layout_width="match_parent"
-                android:layout_height="28dp"
-                android:layout_gravity="right"
-                android:gravity="center_vertical|right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="7-13"
+                android:visibility="gone"
                 android:textSize="12sp"
-                android:visibility="invisible" />
-        </LinearLayout>
+                android:layout_centerVertical="true"
+                android:layout_toStartOf="@+id/status" />
 
-        <LinearLayout
+            <TextView
+                android:layout_width="wrap_content"
+                android:id="@+id/status"
+                android:text="已处理"
+                android:visibility="gone"
+                android:background="@drawable/card_back"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/job_name"
                 android:layout_width="wrap_content"
                 android:layout_height="36dp"
                 android:gravity="center_vertical"
-                android:text="人力资源部人事实习生"
+                android:text="Job Name"
                 android:textColor="#000000"
                 android:textSize="16sp"
                 android:layout_marginLeft="24dp" />
 
             <TextView
                 android:id="@+id/apply"
-                android:layout_width="match_parent"
-                android:layout_height="36dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:gravity="center_vertical|right"
                 android:text="18人申请"
                 android:textSize="12sp"
-                android:visibility="invisible" />
+                android:visibility="invisible"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true" />
 
 
-        </LinearLayout>
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -92,7 +107,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:maxLines="2"
-                android:text="湖北省武汉市洪山区珞瑜路"
+                android:text="Address"
                 android:textSize="12sp"
                 />
 
@@ -103,7 +118,7 @@
                 android:maxLines="1"
                 android:layout_gravity="right"
                 android:gravity="center_vertical|right"
-                android:text="距离 120米"
+                android:text="Option"
                 android:textSize="12sp" />
         </LinearLayout>
 

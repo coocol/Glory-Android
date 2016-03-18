@@ -26,6 +26,9 @@
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <application
         android:name=".application.GloryApplication"
         android:allowBackup="true"
@@ -62,39 +65,29 @@
 
         <activity
             android:name=".activities.LoginActivity"
-            android:theme="@style/login" >
+            android:theme="@style/login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".activities.PasswordActivity" />
         <activity
             android:name=".activities.LocationActivity"
             android:label="@string/title_activity_location"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="org.acra.CrashReportDialog"
-            android:excludeFromRecents="true"
-            android:finishOnTaskLaunch="true"
-            android:launchMode="singleInstance"
-            android:process=":error_report"
-            android:theme="@style/Theme.Dialog" />
-
-        <service
-            android:name="org.acra.sender.SenderService"
-            android:exported="false"
-            android:process=":acra" />
-
-        <activity
             android:name=".activities.JobDetailActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.CompanyDetailActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".activities.UserHomeActivity"
+            android:theme="@style/AppTheme"/>
+        <activity
+            android:name=".activities.ResumeActivity"
+            android:label="@string/title_activity_resume"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

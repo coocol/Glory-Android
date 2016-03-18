@@ -18,16 +18,15 @@
         android:layout_height="68dp"
         fresco:roundingBorderWidth="2dp"
         fresco:roundingBorderColor="@android:color/white"
-        fresco:roundAsCircle="true"
-        android:scaleType="fitXY"
-        android:src="@drawable/ic_user" />
+        fresco:placeholderImage="@mipmap/ic_launcher"
+        fresco:roundAsCircle="true"/>
 
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:text="谢向飞"
+        android:text="Name"
         android:id="@+id/nick"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
@@ -35,6 +34,6 @@
         android:id="@+id/sign"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="找一份码农的工作" />
+        android:text="Signature" />
 
 </LinearLayout>

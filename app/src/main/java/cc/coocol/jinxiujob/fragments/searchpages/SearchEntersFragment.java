@@ -1,6 +1,7 @@
 package cc.coocol.jinxiujob.fragments.searchpages;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import cc.coocol.jinxiujob.R;
+import cc.coocol.jinxiujob.activities.CompanyDetailActivity;
 import cc.coocol.jinxiujob.activities.MainActivity;
 import cc.coocol.jinxiujob.adapters.EnterprisesListAdapter;
 import cc.coocol.jinxiujob.adapters.JobsListAdapter;
@@ -83,19 +85,6 @@ public class SearchEntersFragment extends BaseFragment implements
         }
     };
 
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        if (query != null && enterItemModels.size() == 0) {
-//            refreshLayout.post(new Runnable() {
-//                @Override
-//                public void run() {
-//                    refreshLayout.setRefreshing(true);
-//                }
-//            });
-//            searchAllEnters(REFRESH);
-//        }
-//    }
 
     @Override
     public String getTile() {
@@ -138,6 +127,16 @@ public class SearchEntersFragment extends BaseFragment implements
         recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).color(Color.TRANSPARENT).size(12).build());
         refreshLayout.setColorSchemeColors(new int[]{getResources().getColor(R.color.colorPrimary)});
         adapter = new EnterprisesListAdapter(getContext(), enterItemModels, EntersListType.AllEnters, this);
+        adapter.setOnItemClickListener(new EnterprisesListAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v) {
+                if (v.getId() == R.id.container) {
+                    Intent intent = new Intent(getContext(), CompanyDetailActivity.class);
+                    intent.putExtra("company_id", (int)v.getTag());
+                    startActivity(intent);
+                }
+            }
+        });
         recyclerView.setAdapter(adapter);
         return view;
     }

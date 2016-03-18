@@ -5,5 +5,5 @@ package cc.coocol.jinxiujob.enums;
  */
 public enum JobListType {
 
-    AllJob, HotJob, NearbyJob
+    AllJob, HotJob, NearbyJob, Collect, Apply
 }

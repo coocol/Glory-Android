@@ -1,9 +1,12 @@
 package cc.coocol.jinxiujob.fragments.collectpages;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,27 +16,64 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.google.gson.reflect.TypeToken;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cc.coocol.jinxiujob.R;
+import cc.coocol.jinxiujob.activities.CompanyDetailActivity;
+import cc.coocol.jinxiujob.activities.MainActivity;
 import cc.coocol.jinxiujob.adapters.EnterprisesListAdapter;
+import cc.coocol.jinxiujob.configs.MyConfig;
 import cc.coocol.jinxiujob.enums.EntersListType;
 import cc.coocol.jinxiujob.fragments.BaseFragment;
+import cc.coocol.jinxiujob.gsons.ResponseStatus;
 import cc.coocol.jinxiujob.models.AllEnterItemModel;
 import cc.coocol.jinxiujob.models.BaseEnterItemModel;
+import cc.coocol.jinxiujob.networks.HttpClient;
+import cc.coocol.jinxiujob.networks.URL;
 
 
-public class CollectedEnterprisesFragment extends BaseFragment implements EnterprisesListAdapter.OnLastItemVisibleListener {
+public class CollectedEnterprisesFragment extends BaseFragment implements EnterprisesListAdapter.OnLastItemVisibleListener,
+        SwipeRefreshLayout.OnRefreshListener {
 
 
     private SwipeRefreshLayout refreshLayout;
     private RecyclerView recyclerView;
     private EnterprisesListAdapter adapter;
 
-    private List<BaseEnterItemModel> enterItemModels;
+    private List<BaseEnterItemModel> enterItemModels = new ArrayList<>();
+    private static final int GET_SUCCESS = 8;
+    private static final int NO_MORE = 43;
+
+    private int startId = 0;
+
+    private MainActivity activity;
+
+    private int REFRESH = 77;
+    private int GET_MORE = 99;
+
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case NO_MORE:
+                    activity.showSimpleSnack("没有更多数据", activity);
+                    break;
+                case GET_SUCCESS:
+                    adapter.notifyDataSetChanged();
+                    break;
+            }
+            refreshLayout.setRefreshing(false);
+        }
+    };
+
+
 
     @Override
     public String getTile() {
@@ -41,13 +81,6 @@ public class CollectedEnterprisesFragment extends BaseFragment implements Enterp
     }
 
     public CollectedEnterprisesFragment() {
-
-        enterItemModels = new ArrayList<>();
-
-        for (int i = 0; i < 10; i++) {
-            enterItemModels.add(new AllEnterItemModel());
-        }
-
     }
 
     public static CollectedEnterprisesFragment newInstance(String param1, String param2) {
@@ -58,6 +91,7 @@ public class CollectedEnterprisesFragment extends BaseFragment implements Enterp
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        activity = (MainActivity) getActivity();
     }
 
     @Override
@@ -66,17 +100,91 @@ public class CollectedEnterprisesFragment extends BaseFragment implements Enterp
 
         View view = inflater.inflate(R.layout.fragment_collected_all_enters, container, false);
         refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh_layout);
+        refreshLayout.setOnRefreshListener(this);
         recyclerView = (RecyclerView) view.findViewById(R.id.recyle_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).color(Color.TRANSPARENT).size(12).build());
         refreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorPrimary));
-        adapter = new EnterprisesListAdapter(getContext(), enterItemModels, EntersListType.AllEnters, this);
+        adapter = new EnterprisesListAdapter(getContext(), enterItemModels, EntersListType.Collect, this);
+        adapter.setOnItemClickListener(new EnterprisesListAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v) {
+                if (v.getId() == R.id.container) {
+                    Intent intent = new Intent(getContext(), CompanyDetailActivity.class);
+                    intent.putExtra("company_id", (int) v.getTag());
+                    startActivity(intent);
+                }
+            }
+        });
         recyclerView.setAdapter(adapter);
         return view;
     }
 
     @Override
-    public void loadMore() {
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (enterItemModels == null || enterItemModels.size() == 0) {
+            refreshLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    refreshLayout.setRefreshing(true);
+                }
+            });
+            requestEnters(REFRESH);
+        }
+    }
 
+    public void requestEnters(final int type) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Map<String, Object> m = new HashMap<>(4);
+                if (type == GET_MORE) {
+                    m.put("start_id", startId);
+                }
+                m.put("token", MyConfig.token);
+                ResponseStatus responseStatus = new HttpClient().get(URL.USER_COLLECTIONS_ENTERS + MyConfig.uid, m, false);
+                if (responseStatus != null && responseStatus.getStatus() != null &&
+                        responseStatus.getStatus().equals("success")) {
+                    List<AllEnterItemModel> models = HttpClient.getGson().fromJson(responseStatus.getData(),
+                            new TypeToken<ArrayList<AllEnterItemModel>>() {
+                            }.getType());
+                    if (type == REFRESH) {
+                        if (models != null) {
+                            enterItemModels.clear();
+                            for (AllEnterItemModel enterItemModel : models) {
+                                enterItemModels.add(enterItemModel);
+                            }
+                            if (enterItemModels.size() > 0) {
+                                startId = enterItemModels.size();
+                            }
+                            handler.sendEmptyMessage(GET_SUCCESS);
+                        }
+                    } else if (type == GET_MORE) {
+                        if (models == null || models.size() == 0) {
+                            handler.sendEmptyMessage(NO_MORE);
+                        } else {
+                            for (AllEnterItemModel enterItemModel : models) {
+                                enterItemModels.add(enterItemModel);
+                            }
+                            if (enterItemModels.size() > 0) {
+                                startId = enterItemModels.size();
+                            }
+                            handler.sendEmptyMessage(GET_SUCCESS);
+                        }
+                    }
+                }
+            }
+        }).start();
+    }
+
+    @Override
+    public void onRefresh() {
+        requestEnters(REFRESH);
+    }
+
+    @Override
+    public void loadMore() {
+        requestEnters(GET_MORE);
     }
 }

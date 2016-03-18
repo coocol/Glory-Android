@@ -22,7 +22,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="36dp"
                 android:gravity="center_vertical"
-                android:text="人力资源部人事实习生"
+                android:text="Job Name"
                 android:textColor="#000000"
                 android:textSize="16sp"
                 android:layout_marginLeft="24dp" />
@@ -33,7 +33,7 @@
                 android:layout_height="36dp"
                 android:layout_gravity="right"
                 android:gravity="center_vertical|right"
-                android:text="18人申请"
+                android:text="Option"
                 android:textSize="12sp"
                 android:visibility="invisible" />
 
@@ -57,7 +57,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:maxLines="2"
-                android:text="湖北省武汉市洪山区珞瑜路"
+                android:text="Address"
                 android:textSize="12sp" />
 
             <TextView
@@ -67,7 +67,7 @@
                 android:maxLines="1"
                 android:layout_gravity="right"
                 android:gravity="center_vertical|right"
-                android:text="距离 120米"
+                android:text="Option"
                 android:textSize="12sp" />
         </LinearLayout>
 

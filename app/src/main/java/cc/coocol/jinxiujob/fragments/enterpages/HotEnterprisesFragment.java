@@ -1,6 +1,7 @@
 package cc.coocol.jinxiujob.fragments.enterpages;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import cc.coocol.jinxiujob.R;
+import cc.coocol.jinxiujob.activities.CompanyDetailActivity;
 import cc.coocol.jinxiujob.activities.MainActivity;
 import cc.coocol.jinxiujob.adapters.EnterprisesListAdapter;
 import cc.coocol.jinxiujob.configs.MyConfig;
@@ -106,6 +108,16 @@ public class HotEnterprisesFragment extends BaseFragment implements
         refreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorPrimary));
         enterItemModels = new ArrayList<>();
         adapter = new EnterprisesListAdapter(getContext(), enterItemModels, EntersListType.HotEnters, this);
+        adapter.setOnItemClickListener(new EnterprisesListAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v) {
+                if (v.getId() == R.id.container) {
+                    Intent intent = new Intent(getContext(), CompanyDetailActivity.class);
+                    intent.putExtra("company_id", (int)v.getTag());
+                    startActivity(intent);
+                }
+            }
+        });
         recyclerView.setAdapter(adapter);
         return view;
     }

@@ -17,6 +17,10 @@ public class MyConfig {
 
     public static String token;
 
+    public static double lat;
+
+    public static double lng;
+
 
     public MyConfig() {
     }

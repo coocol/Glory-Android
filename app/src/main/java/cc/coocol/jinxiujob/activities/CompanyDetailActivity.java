@@ -40,7 +40,7 @@ public class CompanyDetailActivity extends BaseActivity {
     @Bind(R.id.tabLayout) TabLayout tabLayout;
     @Bind(R.id.viewpager) ViewPager viewPager;
     @Bind(R.id.name) TextView companyNameView;
-    @Bind(R.id.logo) SimpleDraweeView logoView;
+    @Bind(R.id.c_logo) SimpleDraweeView logoView;
     @Bind(R.id.nick) TextView companyNickVIew;
 
     private EnterInfoFragmentAdapter adapter;
@@ -91,7 +91,7 @@ public class CompanyDetailActivity extends BaseActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //getSupportActionBar().setHomeAsUpIndicator(R.drawable.abc_ic_clear_mtrl_alpha);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back);
         getSupportActionBar().setTitle("");
 
         final TabLayout.Tab infoTab = tabLayout.newTab().setText("企业主页");
@@ -133,7 +133,7 @@ public class CompanyDetailActivity extends BaseActivity {
             public void onTabReselected(TabLayout.Tab tab) {
             }
         });
-        Uri uri = Uri.parse(URL.COMPANY_LOGO + enterpriseId + ".jpg");
+        Uri uri = Uri.parse("http://115.28.22.98:7652/api/v1.0/static/logo/" + enterpriseId + ".jpg");
         logoView.setImageURI(uri);
     }
 

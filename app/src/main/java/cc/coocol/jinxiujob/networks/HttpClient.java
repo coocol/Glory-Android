@@ -5,6 +5,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.File;
 import java.io.IOError;
 import java.io.IOException;
 import java.util.Map;
@@ -14,6 +15,7 @@ import cc.coocol.jinxiujob.configs.MyConfig;
 import cc.coocol.jinxiujob.gsons.ResponseStatus;
 import okhttp3.Call;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -25,6 +27,12 @@ import okhttp3.Response;
 public class HttpClient {
 
     private static OkHttpClient httpClient = new OkHttpClient();
+
+    public static final MediaType MEDIA_TYPE_MARKDOWN
+            = MediaType.parse("text/x-markdown; charset=utf-8");
+
+    public static final MediaType MEDIA_TYPE_IMAGES
+            = MediaType.parse("image/*; charset=utf-8");
 
     private static Gson gson = new GsonBuilder().serializeNulls().create();
 
@@ -63,7 +71,39 @@ public class HttpClient {
         return new ResponseStatus();
     }
 
+    public ResponseStatus postUserHead(File file, int user, String token) {
+        RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                .addFormDataPart("token",token)
+                .addFormDataPart("file", "30.png", RequestBody.create(MediaType.parse("image/png"), file)).build();
+        Response response = null;
+        Request request = new Request.Builder()
+                .url(URL.ROOT_PATH + "user/head/" + user)
+                .post(requestBody)
+                .build();
+        try {
+            response = httpClient.newCall(request).execute();
+            String t = response.body().string();
+            return gson.fromJson(t, ResponseStatus.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
+    public ResponseStatus postResumePhoto(File file) {
+        Request request = new Request.Builder()
+                .url(URL.ROOT_PATH + "static/resume")
+                .post(RequestBody.create(MediaType.parse("image/jpeg"), file))
+                .build();
+        Response response = null;
+        try {
+            response = httpClient.newCall(request).execute();
+            return gson.fromJson(response.body().string(), ResponseStatus.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     public ResponseStatus post(String url, Map<String, Object> data, boolean withToken) {
         url = URL.ROOT_PATH + url;

@@ -105,6 +105,8 @@ public class LoginActivity extends BaseActivity {
             MyConfig.uid = tokenConfigs.getId();
             MyConfig.phone = tokenConfigs.getPhone();
             MyConfig.token = tokenConfigs.getToken();
+            MyConfig.lng = sharedPreferences.getFloat("lng", 114.37702f);
+            MyConfig.lat = sharedPreferences.getFloat("lat", 30.54961f);
             LoginActivity.this.saveConfig();
         }
 

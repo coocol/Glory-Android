@@ -21,7 +21,6 @@ import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import cc.coocol.jinxiujob.R;
 import cc.coocol.jinxiujob.configs.MyConfig;
@@ -33,7 +32,6 @@ import cc.coocol.jinxiujob.fragments.SearchFragment;
 import cc.coocol.jinxiujob.fragments.SettingsFragment;
 import cc.coocol.jinxiujob.gsons.ResponseStatus;
 import cc.coocol.jinxiujob.models.BaseUserModel;
-import cc.coocol.jinxiujob.models.DetailEnterModel;
 import cc.coocol.jinxiujob.networks.HttpClient;
 import cc.coocol.jinxiujob.networks.URL;
 
@@ -67,7 +65,7 @@ public class MainActivity extends BaseActivity
                 if (userModel.getNick() == null) {
                     nickView.setText(userModel.getPhone());
                 } else {
-                    nickView.setText(userModel.getPhone());
+                    nickView.setText(userModel.getNick());
                 }
                 if (userModel.getSignature() == null) {
                     signVIew.setText("（尚未编辑数据）");
@@ -187,12 +185,16 @@ public class MainActivity extends BaseActivity
         toggle.syncState();
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
-        SimpleDraweeView draweeView = (SimpleDraweeView) navigationView.getHeaderView(0).findViewById(R.id.user_logo);
-        draweeView.setImageURI(Uri.parse("http://115.28.22.98/api/v1.0/static/head/30.jpg"));
+        Uri uri = Uri.parse("http://115.28.22.98:7652/api/v1.0/static/head/" + MyConfig.uid + ".jpg");
+        final SimpleDraweeView draweeView = (SimpleDraweeView) navigationView.getHeaderView(0).findViewById(R.id.user_logo);
+        draweeView.setImageURI(uri);
         draweeView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                drawer.closeDrawers();
+                Intent intent = new Intent(MainActivity.this, UserHomeActivity.class);
+                intent.putExtra("user_id", MyConfig.uid);
+                startActivity(intent);
             }
         });
         navigationView.setNavigationItemSelectedListener(this);

@@ -45,6 +45,12 @@ public abstract class BaseActivity extends AppCompatActivity {
                 .show();
     }
 
+    public void showProgressDialog() {
+        progressDialog = new MaterialDialog.Builder(this)
+                .content("请稍后").progress(true, 0)
+                .show();
+    }
+
     public void dismissProgressDialog() {
         if (progressDialog != null) {
             progressDialog.dismiss();
@@ -125,6 +131,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         editor.putString("phone", MyConfig.phone);
         editor.putInt("cityId", MyConfig.cityId);
         editor.putInt("uid", MyConfig.uid);
+        editor.putFloat("lat", (float) MyConfig.lat);
         editor.commit();
     }
 

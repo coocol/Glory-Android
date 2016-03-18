@@ -18,7 +18,7 @@
             android:orientation="vertical">
 
             <com.facebook.drawee.view.SimpleDraweeView
-                android:id="@+id/logo"
+                android:id="@+id/c_logo"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
                 android:scaleType="fitXY"
@@ -34,7 +34,7 @@
                 android:layout_width="wrap_content"
                 android:textColor="@android:color/white"
                 android:layout_height="wrap_content"
-                android:text="谢向飞" />
+                android:text="Nick" />
 
             <TextView
                 android:id="@+id/name"
@@ -42,7 +42,19 @@
                 android:textColor="@android:color/white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="找一份码农的工作" />
+                android:text="Name" />
+
+            <Button
+                android:id="@+id/collect_button"
+                android:layout_width="48dp"
+                android:layout_height="24dp"
+                android:background="@color/colorAccent"
+                android:text="收藏"
+                android:visibility="gone"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="6dp"
+                android:textColor="@android:color/white"
+                android:textSize="12sp" />
 
         </LinearLayout>
 

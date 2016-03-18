@@ -149,8 +149,13 @@ public class NearbyJobsFragment extends BaseFragment implements JobsListAdapter.
                     m.put("start_id", startJobId);
                 }
                 m.put("city_id", MyConfig.cityId);
-                m.put("lat", 30.550107);
-                m.put("lng", 114.368688);
+                if (MyConfig.lat == 0 || MyConfig.lng == 0) {
+                    m.put("lat", MyConfig.lat);
+                    m.put("lng", MyConfig.lng);
+                } else {
+                    m.put("lat", 30.54961);
+                    m.put("lng", 114.37702);
+                }
                 ResponseStatus responseStatus = new HttpClient().get(URL.ALL_JOBS, m, false);
                 if (responseStatus != null && responseStatus.getStatus() != null &&
                         responseStatus.getStatus().equals("success")) {

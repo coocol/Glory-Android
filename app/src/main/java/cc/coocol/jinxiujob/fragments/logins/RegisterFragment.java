@@ -219,7 +219,7 @@ public class RegisterFragment extends BaseFragment implements View.OnClickListen
                     ;
                 } else if (flag == 2) {  //register
                     Snackbar.with(getContext()).text("注册成功").show(activity);
-                    activity.getToken(phone, StringUtil.sha1String(password));
+                    activity.getToken(phone, password);
                 }
             }
         }
