@@ -197,8 +197,7 @@ public class RegisterFragment extends BaseFragment implements View.OnClickListen
                 return new HttpClient().get(URL.PHONE_CODE, args, false);
             } else {  //register
                 args.put("phone", phone);
-                password = StringUtil.sha1String(password);
-                args.put("password", password);
+                args.put("password", StringUtil.sha1String(password));
                 args.put("code", code);
                 return new HttpClient().post(URL.USER, args, false);
             }

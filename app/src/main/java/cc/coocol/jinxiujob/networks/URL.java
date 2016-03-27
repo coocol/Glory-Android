@@ -4,7 +4,7 @@ package cc.coocol.jinxiujob.networks;
  * Created by coocol on 2016/3/9.
  */
 public class URL {
-    public static final String ROOT_PATH = "http:/115.28.22.98:7652/api/v1.0/";
+    public static final String ROOT_PATH = "http://115.28.22.98:7652/api/v1.0/";
 
     public static final String PHONE_CODE = "phone/code";
     public static final String USER = "user";
@@ -43,4 +43,5 @@ public class URL {
     public static final String USER_APPLICATIONS = "applications/"; // + user_id
 
 
+    public static final String NOTIFICATIONS = "notifications/";
 }

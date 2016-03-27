@@ -4,7 +4,6 @@
     android:background="@color/background"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="8dp"
     android:clickable="true"
     tools:context="cc.coocol.jinxiujob.fragments.enterinfos.EnterJobsFragment">
 

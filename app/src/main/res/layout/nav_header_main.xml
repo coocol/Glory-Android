@@ -18,7 +18,7 @@
         android:layout_height="68dp"
         fresco:roundingBorderWidth="2dp"
         fresco:roundingBorderColor="@android:color/white"
-        fresco:placeholderImage="@mipmap/ic_launcher"
+        fresco:placeholderImage="@drawable/image_loading"
         fresco:roundAsCircle="true"/>
 
 

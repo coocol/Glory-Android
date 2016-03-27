@@ -30,10 +30,10 @@
             android:icon="@drawable/ic_location"
             android:title="@string/navigation_item_location"/>
 
-        <item
-            android:id="@+id/nav_settings"
-            android:icon="@drawable/ic_drawer_settings"
-            android:title="@string/action_settings"/>
+        <!--<item-->
+            <!--android:id="@+id/nav_settings"-->
+            <!--android:icon="@drawable/ic_drawer_settings"-->
+            <!--android:title="@string/action_settings"/>-->
 
     </group>
 

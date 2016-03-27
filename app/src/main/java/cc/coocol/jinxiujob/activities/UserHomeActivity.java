@@ -1,37 +1,28 @@
 package cc.coocol.jinxiujob.activities;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.widget.CardView;
 import android.text.InputType;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
 
-
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import butterknife.Bind;
@@ -41,7 +32,6 @@ import cc.coocol.jinxiujob.R;
 import cc.coocol.jinxiujob.configs.MyConfig;
 import cc.coocol.jinxiujob.gsons.ResponseStatus;
 import cc.coocol.jinxiujob.models.BaseUserModel;
-import cc.coocol.jinxiujob.models.DetailEnterModel;
 import cc.coocol.jinxiujob.networks.HttpClient;
 import cc.coocol.jinxiujob.networks.URL;
 
@@ -55,13 +45,22 @@ public class UserHomeActivity extends BaseActivity {
     @Bind(R.id.nick_photo)
     SimpleDraweeView nickPhotoView;
 
+    public static final String TMP_PATH = "clip_temp.jpg";
+
     boolean isEditted = false;
 
+    private final int START_ALBUM_REQUESTCODE = 1;
+    private final int CAMERA_WITH_DATA = 2;
+    private final int CROP_RESULT_CODE = 3;
 
     private BaseUserModel userModel;
 
+    private Uri newHeadUri;
+
     private String nick;
     private String signature;
+
+    public static boolean isPhotoChanged = false;
 
     private Handler handler = new Handler() {
         @Override
@@ -84,7 +83,9 @@ public class UserHomeActivity extends BaseActivity {
             } else if (msg.what == 27) {
                 showSimpleSnack("上传成功", UserHomeActivity.this);
                 Uri uri = Uri.parse("http://115.28.22.98:7652/api/v1.0/static/head/" + uid + ".jpg");
+                Fresco.getImagePipeline().evictFromCache(uri);
                 nickPhotoView.setImageURI(uri);
+                isPhotoChanged = true;
             } else if (msg.what == 28) {
                 showSimpleSnack("上传失败", UserHomeActivity.this);
             }
@@ -133,90 +134,118 @@ public class UserHomeActivity extends BaseActivity {
                 .itemsCallback(new MaterialDialog.ListCallback() {
                     @Override
                     public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                        Intent in;
-                        if (which == 1) {
-                            Intent intent = new Intent(Intent.ACTION_PICK);
-                            intent.setType("image/*");//相片类型
-                            startActivityForResult(intent, 1);
-                        } else if (which == 0) {
-                            Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-                            startActivityForResult(intent, 0);
+                        if (which == 0) {
+                            startCapture();
+                        } else if (which == 1) {
+                            startAlbum();
                         }
                     }
                 })
                 .show();
     }
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK && requestCode == 0) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            try {
-                BufferedOutputStream bos = new BufferedOutputStream(
-                        new FileOutputStream("/sdcard/" + MyConfig.uid + ".jpg", false));
-                imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
-                bos.flush();
-                bos.close();
-                showProgressDialog();
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            File file = new File("/sdcard/" + MyConfig.uid + ".jpg");
-                            ResponseStatus responseStatus = new HttpClient().postUserHead(file, MyConfig.uid, MyConfig.token);
-                            if (responseStatus != null && responseStatus.getStatus() != null &&
-                                    responseStatus.getStatus().equals("success")) {
-                                handler.sendEmptyMessage(27);
-                            } else {
-                                handler.sendEmptyMessage(28);
-                            }
-                        } catch (Exception w) {
-                            w.toString();
-                        }
+        // String result = null;
+        if (resultCode != RESULT_OK) {
+            return;
+        }
 
-                    }
-                }).start();
-            } catch (Exception e) {
+        switch (requestCode) {
+            case CROP_RESULT_CODE:
+                String path = data.getStringExtra(ClipImageActivity.RESULT_PATH);
+                upload(new File(path));
+                break;
+            case START_ALBUM_REQUESTCODE:
+                startCropImageActivity(getFilePath(data.getData()));
+                break;
+            case CAMERA_WITH_DATA:
+                // 照相机程序返回的,再次调用图片剪辑程序去修剪图片
+                startCropImageActivity(Environment.getExternalStorageDirectory()
+                        + "/" + TMP_PATH);
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode,data);
+    }
+
+    // 裁剪图片的Activity
+    private void startCropImageActivity(String path) {
+        ClipImageActivity.startActivity(this, path, CROP_RESULT_CODE);
+    }
+
+    private void startAlbum() {
+        try {
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT, null);
+            intent.setType("image/*");
+            startActivityForResult(intent, START_ALBUM_REQUESTCODE);
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+            try {
+                Intent intent = new Intent(Intent.ACTION_PICK, null);
+                intent.setDataAndType(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+                startActivityForResult(intent, START_ALBUM_REQUESTCODE);
+            } catch (Exception e2) {
+                // TODO: handle exception
                 e.printStackTrace();
             }
-
-        } else if (resultCode == RESULT_OK && requestCode == 1) {
-            Uri uri = data.getData();
-            final File file = new File(uri.getPath());
-            showProgressDialog();
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        ResponseStatus responseStatus = new HttpClient().postUserHead(file, MyConfig.uid, MyConfig.token);
-                        if (responseStatus != null && responseStatus.getStatus() != null &&
-                                responseStatus.getStatus().equals("success")) {
-                            handler.sendEmptyMessage(27);
-                        } else {
-                            handler.sendEmptyMessage(28);
-                        }
-                    } catch (Exception w) {
-                        w.toString();
-                    }
-
-                }
-            }).start();
         }
     }
 
-    public static void saveImage(Bitmap photo, String spath) {
+    private void startCapture() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(
+                Environment.getExternalStorageDirectory(), TMP_PATH)));
+        startActivityForResult(intent, CAMERA_WITH_DATA);
+    }
+
+    /**
+     * 通过uri获取文件路径
+     *
+     * @param mUri
+     * @return
+     */
+    public String getFilePath(Uri mUri) {
         try {
-            BufferedOutputStream bos = new BufferedOutputStream(
-                    new FileOutputStream(spath, false));
-            photo.compress(Bitmap.CompressFormat.JPEG, 100, bos);
-            bos.flush();
-            bos.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+            if (mUri.getScheme().equals("file")) {
+                return mUri.getPath();
+            } else {
+                return getFilePathByUri(mUri);
+            }
+        } catch (FileNotFoundException ex) {
+            return null;
         }
     }
+
+    // 获取文件路径通过url
+    private String getFilePathByUri(Uri mUri) throws FileNotFoundException {
+        Cursor cursor = getContentResolver()
+                .query(mUri, null, null, null, null);
+        cursor.moveToFirst();
+        return cursor.getString(1);
+    }
+
+    private void upload(final File image) {
+        showProgressDialog();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ResponseStatus responseStatus = new HttpClient().postUserHead(image, MyConfig.uid, MyConfig.token);
+                    if (responseStatus != null && responseStatus.getStatus() != null &&
+                            responseStatus.getStatus().equals("success")) {
+                        handler.sendEmptyMessage(27);
+                    } else {
+                        handler.sendEmptyMessage(28);
+                    }
+                } catch (Exception w) {
+                    w.toString();
+                }
+
+            }
+        }).start();
+    }
+
 
     @OnClick(R.id.goto_resume)
     void gotoResume() {
@@ -232,7 +261,6 @@ public class UserHomeActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_home);
         ButterKnife.bind(this);
-
 
         if (getIntent() != null) {
             uid = getIntent().getIntExtra("user_id", -1);

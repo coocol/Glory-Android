@@ -1,6 +1,7 @@
 package cc.coocol.jinxiujob.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import cc.coocol.jinxiujob.R;
 import cc.coocol.jinxiujob.configs.MyConfig;
 import cc.coocol.jinxiujob.enums.JobListType;
 import cc.coocol.jinxiujob.models.AllJobItemModel;
+import cc.coocol.jinxiujob.models.AppliedJobItemModel;
 import cc.coocol.jinxiujob.models.BaseJobItemModel;
 import cc.coocol.jinxiujob.models.HotJobItemModel;
 import cc.coocol.jinxiujob.models.NearbyJobItemModel;
@@ -66,9 +68,9 @@ public class JobsListAdapter extends RecyclerView.Adapter<JobsListAdapter.PlaceH
     @Override
     public PlaceHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_job_list, parent, false);
-        view.setOnClickListener(this);
         PlaceHolder placeHolder = new PlaceHolder(view);
         placeHolder.companyLayout.setOnClickListener(this);
+        placeHolder.cardView.setOnClickListener(this);
         return placeHolder;
     }
 
@@ -103,7 +105,22 @@ public class JobsListAdapter extends RecyclerView.Adapter<JobsListAdapter.PlaceH
                 holder.optionView.setText("距离" + (int)(d * 10000) + "米");
             }
         } else if (jobListType == JobListType.Collect) {
-            holder.statusView.setText(model.getTime());
+            holder.optionView.setText("删除");
+            holder.optionView.setTextColor(context.getResources().getColor(R.color.colorAccent));
+            holder.optionView.setTag(position);
+            holder.optionView.setOnClickListener(this);
+        } else if (jobListType == JobListType.Apply) {
+            int s = ((AppliedJobItemModel)model).getStatus();
+            if (s == 0) {
+                holder.optionView.setText("已投递");
+                holder.optionView.setTextColor(context.getResources().getColor(R.color.colorPrimary));
+            } else if (s == 1) {
+                holder.optionView.setText("已接受");
+                holder.optionView.setTextColor(context.getResources().getColor(android.R.color.holo_green_dark));
+            } else if (s == 2) {
+                holder.optionView.setText("已拒绝");
+                holder.optionView.setTextColor(context.getResources().getColor(R.color.colorAccent));
+            }
         }
         Uri uri = Uri.parse("http://115.28.22.98:7652/api/v1.0/static/logo/" + model.getCompanyId() + ".jpg");
         holder.logoView.setImageURI(uri);
@@ -148,7 +165,7 @@ public class JobsListAdapter extends RecyclerView.Adapter<JobsListAdapter.PlaceH
             jobView = (TextView) itemView.findViewById(R.id.job_name);
             logoView = (SimpleDraweeView) itemView.findViewById(R.id.logo_image);
             statusView = (TextView) itemView.findViewById(R.id.status);
-            cardView = itemView;
+            cardView = itemView.findViewById(R.id.container);
             companyLayout = (RelativeLayout) itemView.findViewById(R.id.company);
         }
 

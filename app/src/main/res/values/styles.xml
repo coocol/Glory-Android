@@ -31,13 +31,14 @@
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark">
         <item name="android:colorForeground">#ffffff</item>
+        <item name="android:textColorSecondary">#ffffff</item>
     </style>
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark">
         <item name="android:colorForeground">#ffffff</item>
         <item name="android:textColorPrimary">#ffffff</item>
         <item name="android:textColorPrimaryDisableOnly">#ffffff</item>
-
+        <item name="android:textColorSecondary">#ffffff</item>
     </style>
 
     <style name="CardViewStyle" parent="android:Widget.TextView">

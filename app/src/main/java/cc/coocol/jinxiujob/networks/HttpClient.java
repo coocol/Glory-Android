@@ -1,11 +1,14 @@
 package cc.coocol.jinxiujob.networks;
 
+import android.os.Environment;
 import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOError;
 import java.io.IOException;
 import java.util.Map;
@@ -14,6 +17,7 @@ import java.util.Objects;
 import cc.coocol.jinxiujob.configs.MyConfig;
 import cc.coocol.jinxiujob.gsons.ResponseStatus;
 import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
@@ -45,8 +49,8 @@ public class HttpClient {
 
     private String makeGetArgs(Map<String, Object> args, boolean withToken) {
         StringBuilder stringBuilder = new StringBuilder();
-        for (Map.Entry<String, Object> entry: args.entrySet()) {
-            stringBuilder.append(entry.getKey()+ "=" + entry.getValue().toString() + "&");
+        for (Map.Entry<String, Object> entry : args.entrySet()) {
+            stringBuilder.append(entry.getKey() + "=" + entry.getValue().toString() + "&");
         }
         return stringBuilder.substring(0, stringBuilder.length() - 1).toString();
     }
@@ -64,17 +68,17 @@ public class HttpClient {
         Request request = new Request.Builder().url(url).build();
         try {
             Response response = httpClient.newCall(request).execute();
-            return new Gson().fromJson(response.body().string(),ResponseStatus.class);
+            return new Gson().fromJson(response.body().string(), ResponseStatus.class);
         } catch (Exception e) {
-            Log.e("http", e.getMessage());
+            //Log.e("http", e.getMessage());
         }
         return new ResponseStatus();
     }
 
     public ResponseStatus postUserHead(File file, int user, String token) {
         RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
-                .addFormDataPart("token",token)
-                .addFormDataPart("file", "30.png", RequestBody.create(MediaType.parse("image/png"), file)).build();
+                .addFormDataPart("token", token)
+                .addFormDataPart("file", user + ".jpg", RequestBody.create(MediaType.parse("image/jpeg"), file)).build();
         Response response = null;
         Request request = new Request.Builder()
                 .url(URL.ROOT_PATH + "user/head/" + user)
@@ -90,16 +94,74 @@ public class HttpClient {
         return null;
     }
 
-    public ResponseStatus postResumePhoto(File file) {
+    public boolean downloadResume(Map<String, Object> args) {
+        String url = URL.ROOT_PATH + URL.RESUME + "file";
+        if (args != null) {
+            url += "?";
+            url += makeGetArgs(args, false);
+        }
         Request request = new Request.Builder()
-                .url(URL.ROOT_PATH + "static/resume")
-                .post(RequestBody.create(MediaType.parse("image/jpeg"), file))
+                .url(url)
                 .build();
+        try {
+            Response response = httpClient.newCall(request).execute();
+            if (!response.isSuccessful()) {
+                throw new IOException("Unexpected code " + response);
+            } else {
+                File f = new File(Environment.getExternalStorageDirectory() + "/GloryResume/" + args.get("name").toString());
+                if (f.exists()) {
+                    f.delete();
+                }
+                f.getParentFile().mkdirs();
+                f.createNewFile();
+
+                BufferedOutputStream outputStream = new BufferedOutputStream(
+                        new FileOutputStream(f));
+                outputStream.write(response.body().bytes());
+                outputStream.flush();
+                outputStream.close();
+                return true;
+            }
+        } catch (Exception e) {
+            e.toString();
+        }
+        return false;
+    }
+
+    public ResponseStatus postResumePhoto(File file, int user, String token) {
+        RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                .addFormDataPart("token", token)
+                .addFormDataPart("file", user + ".jpg", RequestBody.create(MediaType.parse("image/jpeg"), file)).build();
         Response response = null;
+        Request request = new Request.Builder()
+                .url(URL.ROOT_PATH + "resume/photo/" + user)
+                .post(requestBody)
+                .build();
         try {
             response = httpClient.newCall(request).execute();
-            return gson.fromJson(response.body().string(), ResponseStatus.class);
-        } catch (IOException e) {
+            String t = response.body().string();
+            return gson.fromJson(t, ResponseStatus.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    public ResponseStatus postResumeFile(File file, String mediaTypeString, int user, String token) {
+        RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                .addFormDataPart("token", token)
+                .addFormDataPart("file", file.getName(), RequestBody.create(MediaType.parse(mediaTypeString), file)).build();
+        Response response = null;
+        Request request = new Request.Builder()
+                .url(URL.ROOT_PATH + "resume/document/" + user)
+                .post(requestBody)
+                .build();
+        try {
+            response = httpClient.newCall(request).execute();
+            String t = response.body().string();
+            return gson.fromJson(t, ResponseStatus.class);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -114,7 +176,7 @@ public class HttpClient {
                 .build();
         try {
             Response response = httpClient.newCall(request).execute();
-                return gson.fromJson(response.body().string(), ResponseStatus.class);
+            return gson.fromJson(response.body().string(), ResponseStatus.class);
         } catch (Exception e) {
             Log.e("http", e.getMessage());
         }

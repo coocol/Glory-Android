@@ -1,12 +1,15 @@
 package cc.coocol.jinxiujob.fragments;
 
 import android.app.DatePickerDialog;
-import android.content.Context;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.Fragment;
+import android.provider.MediaStore;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,8 +20,11 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.folderselector.FileChooserDialog;
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,6 +32,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cc.coocol.jinxiujob.R;
+import cc.coocol.jinxiujob.activities.ClipImageActivity;
 import cc.coocol.jinxiujob.activities.ResumeActivity;
 import cc.coocol.jinxiujob.configs.MyConfig;
 import cc.coocol.jinxiujob.gsons.ResponseStatus;
@@ -34,7 +41,7 @@ import cc.coocol.jinxiujob.models.ResumeModel;
 import cc.coocol.jinxiujob.networks.HttpClient;
 import cc.coocol.jinxiujob.networks.URL;
 
-public class ResumeFragment extends BaseFragment {
+public class ResumeFragment extends BaseFragment implements FileChooserDialog.FileCallback {
 
     @Bind(R.id.name)
     TextView nameView;
@@ -66,6 +73,41 @@ public class ResumeFragment extends BaseFragment {
     TextView placeView;
     @Bind(R.id.hometown)
     TextView homeTownView;
+    @Bind(R.id.file_click)
+    TextView fileView;
+
+    private final int START_ALBUM_REQUESTCODE = 1;
+    private final int CAMERA_WITH_DATA = 2;
+    private final int CROP_RESULT_CODE = 3;
+
+    private BaseUserModel userModel;
+
+    @OnClick(R.id.file_click)
+    void uploadFileResume() {
+        new MaterialDialog.Builder(getContext())
+                .items(new String[]{"PDF文件", "Microsoft Word文件"})
+                .itemsCallback(new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                        if (which == 0) {
+//                            new FileChooserDialog.Builder(ResumeFragment.this)
+//                                    .chooseButton("确定")  // changes label of the choose button
+//                                    .initialPath("/")  // changes initial path, defaults to external storage directory
+//                                    .mimeType("application/pdf") // Optional MIME type filter
+//                                    .tag("optional-identifier")
+//                                    .show();
+                        } else if (which == 1) {
+//                            new FileChooserDialog.Builder(getActivity())
+//                                    .chooseButton("确定")  // changes label of the choose button
+//                                    .initialPath("/")  // changes initial path, defaults to external storage directory
+//                                    .mimeType("application/msword") // Optional MIME type filter
+//                                    .tag("optional-identifier")
+//                                    .show();
+                        }
+                    }
+                })
+                .show();
+    }
 
     private ResumeModel resumeModel = new ResumeModel();
 
@@ -176,9 +218,9 @@ public class ResumeFragment extends BaseFragment {
                 .itemsCallback(new MaterialDialog.ListCallback() {
                     @Override
                     public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                        if (which ==0){
+                        if (which == 0) {
                             genderView.setText("男");
-                        } else if(which ==1) {
+                        } else if (which == 1) {
                             genderView.setText("女");
                         }
                     }
@@ -328,4 +370,89 @@ public class ResumeFragment extends BaseFragment {
         }).start();
     }
 
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        // String result = null;
+//        if (resultCode != RESULT_OK) {
+//            return;
+//        }
+//
+//        switch (requestCode) {
+//            case CROP_RESULT_CODE:
+//                String path = data.getStringExtra(ClipImageActivity.RESULT_PATH);
+//                upload(new File(path));
+//                break;
+//            case START_ALBUM_REQUESTCODE:
+//                startCropImageActivity(getFilePath(data.getData()));
+//                break;
+//            case CAMERA_WITH_DATA:
+//                // 照相机程序返回的,再次调用图片剪辑程序去修剪图片
+//                startCropImageActivity(Environment.getExternalStorageDirectory()
+//                        + "/" + TMP_PATH);
+//                break;
+//        }
+//        super.onActivityResult(requestCode, resultCode,data);
+//    }
+
+    // 裁剪图片的Activity
+//    private void startCropImageActivity(String path) {
+//        ClipImageActivity.startActivity(this, path, CROP_RESULT_CODE);
+//    }
+
+    private void startAlbum() {
+        try {
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT, null);
+            intent.setType("image/*");
+            startActivityForResult(intent, START_ALBUM_REQUESTCODE);
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+            try {
+                Intent intent = new Intent(Intent.ACTION_PICK, null);
+                intent.setDataAndType(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+                startActivityForResult(intent, START_ALBUM_REQUESTCODE);
+            } catch (Exception e2) {
+                // TODO: handle exception
+                e.printStackTrace();
+            }
+        }
+    }
+
+//    private void startCapture() {
+//        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(
+//                Environment.getExternalStorageDirectory(), TMP_PATH)));
+//        startActivityForResult(intent, CAMERA_WITH_DATA);
+//    }
+
+    /**
+     * 通过uri获取文件路径
+     *
+     * @param mUri
+     * @return
+     */
+//    public String getFilePath(Uri mUri) {
+//        try {
+//            if (mUri.getScheme().equals("file")) {
+//                return mUri.getPath();
+//            } else {
+//                return getFilePathByUri(mUri);
+//            }
+//        } catch (FileNotFoundException ex) {
+//            return null;
+//        }
+//    }
+
+//    // 获取文件路径通过url
+//    private String getFilePathByUri(Uri mUri) throws FileNotFoundException {
+//        Cursor cursor = getContentResolver()
+//                .query(mUri, null, null, null, null);
+//        cursor.moveToFirst();
+//        return cursor.getString(1);
+//    }
+
+    @Override
+    public void onFileSelection(FileChooserDialog dialog, File file) {
+
+    }
 }

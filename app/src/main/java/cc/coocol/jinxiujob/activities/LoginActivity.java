@@ -70,7 +70,8 @@ public class LoginActivity extends BaseActivity {
                 changeToLogin(null);
             }else {
                 loadConfig();
-                gotoActivity(MainActivity.class);
+                gotoActivity(MainActivity.class, Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                finish();
             }
         }
 
@@ -127,7 +128,8 @@ public class LoginActivity extends BaseActivity {
                 SharedPreferences.Editor editor = getSharedPreferences("config", MODE_PRIVATE).edit();
                 editor.putBoolean("first", false);
                 editor.commit();
-                gotoActivity(MainActivity.class);
+                gotoActivity(MainActivity.class, Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                finish();
             }
         }
     }

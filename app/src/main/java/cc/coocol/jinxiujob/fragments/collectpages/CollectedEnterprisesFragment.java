@@ -57,9 +57,14 @@ public class CollectedEnterprisesFragment extends BaseFragment implements Enterp
     private int REFRESH = 77;
     private int GET_MORE = 99;
 
+    private final int CANCEL_OK = 45;
+    private final int CANCEL_FAIL = 46;
+
     private Handler handler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
+            activity.dismissProgressDialog();
+            refreshLayout.setRefreshing(false);
             super.handleMessage(msg);
             switch (msg.what) {
                 case NO_MORE:
@@ -68,8 +73,15 @@ public class CollectedEnterprisesFragment extends BaseFragment implements Enterp
                 case GET_SUCCESS:
                     adapter.notifyDataSetChanged();
                     break;
+                case CANCEL_FAIL:
+                    activity.showSimpleSnack("操作失败", activity);
+                    break;
+                case CANCEL_OK:
+                    activity.showSimpleSnack("已取消收藏", activity);
+                    adapter.notifyDataSetChanged();
+                    break;
             }
-            refreshLayout.setRefreshing(false);
+
         }
     };
 
@@ -113,6 +125,9 @@ public class CollectedEnterprisesFragment extends BaseFragment implements Enterp
                     Intent intent = new Intent(getContext(), CompanyDetailActivity.class);
                     intent.putExtra("company_id", (int) v.getTag());
                     startActivity(intent);
+                } else if (v.getId() == R.id.option) {
+                    int p = (Integer) v.getTag();
+                    cancelCollect(p, enterItemModels.get(p).getCompanyId());
                 }
             }
         });
@@ -159,6 +174,8 @@ public class CollectedEnterprisesFragment extends BaseFragment implements Enterp
                                 startId = enterItemModels.size();
                             }
                             handler.sendEmptyMessage(GET_SUCCESS);
+                        } else {
+                            handler.sendEmptyMessage(85);
                         }
                     } else if (type == GET_MORE) {
                         if (models == null || models.size() == 0) {
@@ -172,7 +189,32 @@ public class CollectedEnterprisesFragment extends BaseFragment implements Enterp
                             }
                             handler.sendEmptyMessage(GET_SUCCESS);
                         }
+                        handler.sendEmptyMessage(85);
+                    } else {
+                        handler.sendEmptyMessage(85);
                     }
+                }
+            }
+        }).start();
+    }
+
+    public void cancelCollect(final int position, final int eid) {
+        activity.showProgressDialog();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Map<String, Object> m = new HashMap<>(4);
+                m.put("enterprise_id", eid);
+                m.put("action","discollect");
+                m.put("user_id", MyConfig.uid);
+                m.put("token", MyConfig.token);
+                ResponseStatus responseStatus = new HttpClient().post(URL.ENTERPRISE + eid, m, false);
+                if (responseStatus != null && responseStatus.getStatus() != null &&
+                        responseStatus.getStatus().equals("success")) {
+                    enterItemModels.remove(position);
+                    handler.sendEmptyMessage(CANCEL_OK);
+                } else {
+                    handler.sendEmptyMessage(CANCEL_FAIL);
                 }
             }
         }).start();

@@ -112,9 +112,14 @@ public abstract class BaseActivity extends AppCompatActivity {
         com.nispok.snackbar.Snackbar.with(this).text(content).show(targetActivity);
     }
 
-
     public void gotoActivity(Class activity) {
         startActivity(new Intent(this, activity));
+    }
+
+    public void gotoActivity(Class activity, int FLAG) {
+        Intent intent = new Intent(this, activity);
+        intent.addFlags(FLAG);
+        startActivity(intent);
     }
 
     public void gotoActivity(Class activity, String key, String value) {

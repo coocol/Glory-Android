@@ -1,13 +1,10 @@
 package cc.coocol.jinxiujob.fragments;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,7 +24,6 @@ import cc.coocol.jinxiujob.R;
 import cc.coocol.jinxiujob.activities.CompanyDetailActivity;
 import cc.coocol.jinxiujob.activities.JobDetailActivity;
 import cc.coocol.jinxiujob.activities.MainActivity;
-import cc.coocol.jinxiujob.adapters.AppliedListAdapter;
 import cc.coocol.jinxiujob.adapters.JobsListAdapter;
 import cc.coocol.jinxiujob.configs.MyConfig;
 import cc.coocol.jinxiujob.enums.JobListType;
@@ -157,13 +153,13 @@ public class AppliedFragment extends BaseFragment implements SwipeRefreshLayout.
                 ResponseStatus responseStatus = new HttpClient().get(URL.USER_APPLICATIONS + MyConfig.uid, m, false);
                 if (responseStatus != null && responseStatus.getStatus() != null &&
                         responseStatus.getStatus().equals("success")) {
-                    List<AllJobItemModel> models = HttpClient.getGson().fromJson(responseStatus.getData(),
-                            new TypeToken<ArrayList<AllJobItemModel>>() {
+                    List<AppliedJobItemModel> models = HttpClient.getGson().fromJson(responseStatus.getData(),
+                            new TypeToken<ArrayList<AppliedJobItemModel>>() {
                             }.getType());
                     if (type == REFRESH) {
                         if (models != null) {
                             jobItemModels.clear();
-                            for (AllJobItemModel allJobItemModel : models) {
+                            for (AppliedJobItemModel allJobItemModel : models) {
                                 jobItemModels.add(allJobItemModel);
                             }
                             if (jobItemModels.size() > 0) {
@@ -175,7 +171,7 @@ public class AppliedFragment extends BaseFragment implements SwipeRefreshLayout.
                         if (models == null || models.size() == 0) {
                             handler.sendEmptyMessage(NO_MORE);
                         } else {
-                            for (AllJobItemModel allJobItemModel : models) {
+                            for (AppliedJobItemModel allJobItemModel : models) {
                                 jobItemModels.add(allJobItemModel);
                             }
                             if (jobItemModels.size() > 0) {

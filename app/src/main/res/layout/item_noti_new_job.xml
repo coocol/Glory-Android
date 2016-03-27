@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="6dp"
+        android:id="@+id/container"
+        android:background="@drawable/gray_selector"
+        android:clickable="true"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_marginTop="6dp"
+            android:gravity="center_vertical"
+            android:layout_height="wrap_content">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="你收藏的企业"
+                android:layout_alignParentStart="true"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="2016-03-12"
+                android:id="@+id/n_time"
+                android:layout_alignParentEnd="true"
+                android:layout_height="wrap_content" />
+
+
+        </RelativeLayout>
+
+
+
+
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:gravity="center_vertical"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/gray_selector"
+            android:clickable="true"
+            android:id="@+id/company_rl"
+            android:layout_height="wrap_content">
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:layout_width="36dp"
+                android:id="@+id/n_logo"
+                fresco:roundingBorderWidth="2dp"
+                fresco:roundingBorderColor="@android:color/white"
+                fresco:roundAsCircle="true"
+
+                android:src="@drawable/ic_user"
+                android:layout_height="36dp" />
+
+            <TextView
+                android:id="@+id/n_company"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Company"
+                android:textSize="16sp"
+                android:layout_marginLeft="12dp"
+                android:textColor="@android:color/black"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/n_logo" />
+
+
+        </RelativeLayout>
+
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="发布了新职位："
+            android:layout_marginTop="6dp"
+            android:layout_height="wrap_content" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_marginTop="6dp"
+            android:layout_height="wrap_content">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:id="@+id/n_job"
+                android:text="发布了新职位"
+                android:textSize="16sp"
+                android:layout_marginLeft="12dp"
+                android:textColor="@android:color/black"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="删除"
+                android:textColor="@color/colorAccent"
+                android:layout_gravity="right"
+                android:id="@+id/n_delete"
+                android:padding="6dp"
+                android:background="@drawable/gray_selector"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true" />
+        </RelativeLayout>
+
+
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

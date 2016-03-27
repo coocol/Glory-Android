@@ -21,6 +21,15 @@ public class ResumeModel {
     private String english;
     private String description;
     private String collegeTime;
+private String file;
+
+    public String getFile() {
+        return file;
+    }
+
+    public void setFile(String file) {
+        this.file = file;
+    }
 
     public ResumeModel() {
     }

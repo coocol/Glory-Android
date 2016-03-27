@@ -25,7 +25,6 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
 
@@ -83,11 +82,17 @@
         <activity
             android:name=".activities.CompanyDetailActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activities.UserHomeActivity"
-            android:theme="@style/AppTheme"/>
+        <activity
+            android:name=".activities.UserHomeActivity"
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".activities.ResumeActivity"
             android:label="@string/title_activity_resume"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".activities.ClipImageActivity" />
+        <activity
+            android:name=".activities.NotificationActivity"
+            android:label="@string/title_activity_notification"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

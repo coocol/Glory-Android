@@ -59,17 +59,28 @@ public class CollectedJobsFragment extends BaseFragment implements JobsListAdapt
     private int REFRESH = 77;
     private int GET_MORE = 99;
 
+    private final int CANCEL_OK = 34;
+    private final int CANCEL_FAIL = 23;
+
     private MainActivity activity;
 
     private Handler handler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
+            activity.dismissProgressDialog();
             super.handleMessage(msg);
             switch (msg.what) {
                 case NO_MORE:
                     activity.showSimpleSnack("没有更多数据", activity);
                     break;
                 case GET_JOBS_SUCCESS:
+                    adapter.notifyDataSetChanged();
+                    break;
+                case CANCEL_FAIL:
+                    activity.showSimpleSnack("操作失败", activity);
+                    break;
+                case CANCEL_OK:
+                    activity.showSimpleSnack("操作成功", activity);
                     adapter.notifyDataSetChanged();
                     break;
             }
@@ -116,12 +127,15 @@ public class CollectedJobsFragment extends BaseFragment implements JobsListAdapt
             public void onItemClick(View v) {
                 if (v.getId() == R.id.company) {
                     Intent intent = new Intent(getContext(), CompanyDetailActivity.class);
-                    intent.putExtra("company_id", (int)v.getTag());
+                    intent.putExtra("company_id", (int) v.getTag());
                     startActivity(intent);
                 } else if (v.getId() == R.id.container) {
                     Intent intent = new Intent(getContext(), JobDetailActivity.class);
-                    intent.putExtra("job_id", (int)v.getTag());
+                    intent.putExtra("job_id", (int) v.getTag());
                     startActivity(intent);
+                } else if (v.getId() == R.id.option) {
+                    int  p = (int) v.getTag();
+                    cancelCollect(p, jobItemModels.get(p).getId());
                 }
             }
         });
@@ -186,6 +200,28 @@ public class CollectedJobsFragment extends BaseFragment implements JobsListAdapt
                             handler.sendEmptyMessage(GET_JOBS_SUCCESS);
                         }
                     }
+                }
+            }
+        }).start();
+    }
+
+    public void cancelCollect(final int position, final int jid) {
+        activity.showProgressDialog();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Map<String, Object> m = new HashMap<>(4);
+                m.put("job_id", jid);
+                m.put("action","discollect");
+                m.put("user_id", MyConfig.uid);
+                m.put("token", MyConfig.token);
+                ResponseStatus responseStatus = new HttpClient().post(URL.JOB + jid, m, false);
+                if (responseStatus != null && responseStatus.getStatus() != null &&
+                        responseStatus.getStatus().equals("success")) {
+                    jobItemModels.remove(position);
+                    handler.sendEmptyMessage(CANCEL_OK);
+                } else {
+                    handler.sendEmptyMessage(CANCEL_FAIL);
                 }
             }
         }).start();

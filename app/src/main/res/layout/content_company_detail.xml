@@ -44,17 +44,33 @@
                 android:layout_height="wrap_content"
                 android:text="Name" />
 
-            <Button
-                android:id="@+id/collect_button"
-                android:layout_width="48dp"
-                android:layout_height="24dp"
-                android:background="@color/colorAccent"
-                android:text="收藏"
-                android:visibility="gone"
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:orientation="horizontal"
                 android:layout_marginTop="12dp"
                 android:layout_marginBottom="6dp"
-                android:textColor="@android:color/white"
-                android:textSize="12sp" />
+                android:gravity="center_vertical"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/collect_button"
+                    android:layout_width="64dp"
+                    android:layout_height="24dp"
+                    android:background="@color/colorAccent"
+                    android:text="收藏"
+                    android:textColor="@android:color/white"
+                    android:textSize="12sp" />
+
+                <ProgressBar
+                    style="?android:attr/progressBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/progre"
+                    android:indeterminate="false" />
+
+            </LinearLayout>
+
+
 
         </LinearLayout>
 

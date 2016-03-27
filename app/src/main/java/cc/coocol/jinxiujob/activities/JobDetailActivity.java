@@ -72,15 +72,20 @@ public class JobDetailActivity extends BaseActivity {
     TextView salaryView;
     @Bind(R.id.apply_progress)
     ProgressBar applyPro;
-    @Bind(R.id.collect_progress) ProgressBar collectPro;
+    @Bind(R.id.collect_progress)
+    ProgressBar collectPro;
 
     @OnClick(R.id.collect_button)
     void collectJob() {
-        collect(jobId);
+        if (collectButton.getText().equals("收藏")) {
+            collect(jobId);
+        } else if (collectButton.getText().equals("取消收藏")) {
+            disCollect(jobId);
+        }
     }
 
     @OnClick(R.id.apply_button)
-    void applyJob(){
+    void applyJob() {
         apply(jobId);
     }
 
@@ -88,6 +93,8 @@ public class JobDetailActivity extends BaseActivity {
     final int GET_JOB_SUCCESS = 45;
     final int APPLY_SUCCESS = 56;
     final int COLLECT_SUCCESS = 51;
+    final int DISCOLLECT_SUCCESS = 33;
+    final int DISCOLLECT_FAIL = 34;
     final int NEED_RESUME = 46;
     final int GET_STATUS_SUCCESS = 72;
 
@@ -109,8 +116,8 @@ public class JobDetailActivity extends BaseActivity {
                         applyButton.setEnabled(false);
                     }
                     if (jobStatus.collect) {
-                        collectButton.setText("已收藏");
-                        collectButton.setEnabled(false);
+                        collectButton.setText("取消收藏");
+                        //collectButton.setEnabled(false);
                     }
                     break;
                 case APPLY_SUCCESS:
@@ -120,11 +127,17 @@ public class JobDetailActivity extends BaseActivity {
                     break;
                 case COLLECT_SUCCESS:
                     showSimpleSnack("收藏成功", JobDetailActivity.this);
-                    collectButton.setText("已收藏");
-                    collectButton.setEnabled(false);
+                    collectButton.setText("取消收藏");
                     break;
                 case NEED_RESUME:
                     showSimpleSnack("请先完善简历", JobDetailActivity.this);
+                    break;
+                case DISCOLLECT_SUCCESS:
+                    showSimpleSnack("已取消收藏", JobDetailActivity.this);
+                    collectButton.setText("收藏");
+                    break;
+                case DISCOLLECT_FAIL:
+                    showSimpleSnack("操作失败", JobDetailActivity.this);
                     break;
                 default:
                     showSimpleSnack("操作失败", JobDetailActivity.this);
@@ -238,7 +251,7 @@ public class JobDetailActivity extends BaseActivity {
             @Override
             public void run() {
                 Map<String, Object> map = new HashMap<>(4);
-                map.put("user_id",MyConfig.uid);
+                map.put("user_id", MyConfig.uid);
                 map.put("token", MyConfig.token);
                 map.put("action", "apply");
                 ResponseStatus responseStatus = new HttpClient().post(URL.JOB + jobId, map, false);
@@ -261,7 +274,7 @@ public class JobDetailActivity extends BaseActivity {
             @Override
             public void run() {
                 Map<String, Object> map = new HashMap<>(4);
-                map.put("user_id",MyConfig.uid);
+                map.put("user_id", MyConfig.uid);
                 map.put("token", MyConfig.token);
                 map.put("action", "collect");
                 ResponseStatus responseStatus = new HttpClient().post(URL.JOB + jobId, map, false);
@@ -278,6 +291,26 @@ public class JobDetailActivity extends BaseActivity {
         }).start();
     }
 
+    public void disCollect(final int jobId) {
+        showProgressDialog();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Map<String, Object> map = new HashMap<>(4);
+                map.put("user_id", MyConfig.uid);
+                map.put("token", MyConfig.token);
+                map.put("action", "discollect");
+                ResponseStatus responseStatus = new HttpClient().post(URL.JOB + jobId, map, false);
+                if (responseStatus != null && responseStatus.getStatus() != null) {
+                    if (responseStatus.getStatus().equals("success")) {
+                        handler.sendEmptyMessage(DISCOLLECT_SUCCESS);
+                    } else if (responseStatus.getStatus().equals("fail")) {
+                        handler.sendEmptyMessage(DISCOLLECT_FAIL);
+                    }
+                }
+            }
+        }).start();
+    }
 
 
     class JobStatus {

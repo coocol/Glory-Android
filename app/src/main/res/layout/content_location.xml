@@ -26,7 +26,6 @@
             android:orientation="vertical">
 
             <android.support.v7.widget.CardView
-                android:foreground="@drawable/card_back"
                 android:clickable="true"
                 android:id="@+id/orient_card"
                 android:layout_width="match_parent"
@@ -38,6 +37,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="10dp"
+                    android:background="@drawable/gray_selector"
                     android:orientation="vertical">
 
                     <TextView

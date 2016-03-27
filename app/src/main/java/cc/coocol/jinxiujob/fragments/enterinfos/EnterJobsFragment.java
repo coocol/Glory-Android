@@ -104,7 +104,7 @@ public class EnterJobsFragment extends BaseFragment implements
         refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh_layout);
         recyclerView = (RecyclerView) view.findViewById(R.id.recyle_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).color(Color.TRANSPARENT).size(12).build());
+        recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).color(Color.LTGRAY).size(1).build());
         refreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorPrimary));
         refreshLayout.setOnRefreshListener(this);
         adapter = new EnterJobsListAdapter(getContext(), jobItemModels, this);

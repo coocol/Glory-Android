@@ -11,7 +11,7 @@
         android:id="@+id/list_view"
         android:dividerHeight="8dp"
         android:divider="@android:color/transparent"
-        android:listSelector="@drawable/card_back"
+        android:listSelector="@drawable/gray_selector"
         android:layout_height="wrap_content">
 
     </ListView>

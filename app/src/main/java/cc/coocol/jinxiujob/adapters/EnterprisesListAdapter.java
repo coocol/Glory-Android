@@ -75,7 +75,7 @@ public class EnterprisesListAdapter extends RecyclerView.Adapter<EnterprisesList
                 context).inflate(R.layout.item_enters_list, parent,
                 false);
         PlaceHolder placeHolder = new PlaceHolder(vIew);
-        vIew.setOnClickListener(this);
+        placeHolder.cardView.setOnClickListener(this);
         return placeHolder;
     }
 
@@ -107,6 +107,11 @@ public class EnterprisesListAdapter extends RecyclerView.Adapter<EnterprisesList
             } else {
                 holder.optionTextView.setText("距离" + (int)(d * 10000) + "米");
             }
+        } else if (entersListType == EntersListType.Collect) {
+            holder.optionTextView.setText("删除");
+            holder.optionTextView.setTextColor(context.getResources().getColor(R.color.colorAccent));
+            holder.optionTextView.setTag(position);
+            holder.optionTextView.setOnClickListener(this);
         }
         Uri uri = Uri.parse("http://115.28.22.98:7652/api/v1.0/static/logo/" + model.getCompanyId() + ".jpg");
         holder.logoImageView.setImageURI(uri);
@@ -124,6 +129,7 @@ public class EnterprisesListAdapter extends RecyclerView.Adapter<EnterprisesList
         public TextView optionTextView;
         public TextView nickTextView;
         public View cardView;
+        public TextView statusView;
 
         public PlaceHolder(View itemView) {
             super(itemView);
@@ -132,7 +138,8 @@ public class EnterprisesListAdapter extends RecyclerView.Adapter<EnterprisesList
             addrTextView = (TextView) itemView.findViewById(R.id.addr);
             logoImageView = (SimpleDraweeView) itemView.findViewById(R.id.e_logo);
             nickTextView = (TextView) itemView.findViewById(R.id.nick);
-            cardView = itemView;
+            statusView = (TextView) itemView.findViewById(R.id.status);
+            cardView = itemView.findViewById(R.id.container);
         }
     }
 

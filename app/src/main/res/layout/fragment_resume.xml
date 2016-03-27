@@ -46,7 +46,7 @@
                         android:id="@+id/name_rl"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/card_back"
+                        android:background="@drawable/gray_selector"
                         android:gravity="center_vertical"
                         android:paddingBottom="6dp"
                         android:paddingTop="6dp">
@@ -83,7 +83,7 @@
                         android:id="@+id/phone_ll"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/card_back"
+                        android:background="@drawable/gray_selector"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
                         android:paddingBottom="6dp"
@@ -113,7 +113,7 @@
                         android:id="@+id/email_ll"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/card_back"
+                        android:background="@drawable/gray_selector"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
                         android:paddingBottom="6dp"
@@ -159,7 +159,7 @@
                             android:id="@+id/birth_ll"
                             android:paddingTop="6dp"
                             android:paddingBottom="6dp"
-                            android:background="@drawable/card_back"
+                            android:background="@drawable/gray_selector"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
@@ -188,7 +188,7 @@
                             android:layout_marginLeft="36dp"
                             android:paddingBottom="6dp"
                             android:paddingRight="6dp"
-                            android:background="@drawable/card_back"
+                            android:background="@drawable/gray_selector"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
@@ -215,7 +215,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/card_back"
+                        android:background="@drawable/gray_selector"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
                         android:id="@+id/place_ll"
@@ -242,7 +242,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/card_back"
+                        android:background="@drawable/gray_selector"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
                         android:paddingBottom="6dp"
@@ -278,7 +278,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
                         android:id="@+id/photo_ll"
-                        android:background="@drawable/card_back"
+                        android:background="@drawable/gray_selector"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
 
@@ -326,7 +326,7 @@
                         android:gravity="center_vertical"
                         android:paddingBottom="6dp"
                         android:paddingTop="6dp"
-                        android:background="@drawable/card_back"
+                        android:background="@drawable/gray_selector"
                         android:id="@+id/college_ll"
                         android:orientation="horizontal">
 
@@ -347,7 +347,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/card_back"
+                        android:background="@drawable/gray_selector"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
                         android:id="@+id/profess_ll"
@@ -371,7 +371,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/card_back"
+                        android:background="@drawable/gray_selector"
                         android:gravity="center_vertical"
                         android:id="@+id/enter_ll"
                         android:orientation="horizontal"
@@ -403,7 +403,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/card_back"
+                        android:background="@drawable/gray_selector"
                         android:orientation="horizontal"
                         android:paddingBottom="6dp"
                         android:id="@+id/english_ll"
@@ -448,7 +448,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/card_back"
+                        android:background="@drawable/gray_selector"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
                         android:id="@+id/award_ll"
@@ -472,7 +472,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/card_back"
+                        android:background="@drawable/gray_selector"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
                         android:id="@+id/experience_ll"
@@ -496,7 +496,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/card_back"
+                        android:background="@drawable/gray_selector"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
                         android:id="@+id/mysay_ll"
@@ -546,8 +546,9 @@
                         android:id="@+id/file_click"
                         android:text="上传文件简历"
                         android:textColor="@android:color/black"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:padding="8dp"
+                        android:background="@drawable/gray_selector"
                         android:layout_marginBottom="6dp"
                         android:layout_height="wrap_content" />
 

@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
@@ -50,6 +51,8 @@ public class MainActivity extends BaseActivity
     private MaterialSearchView searchView;
     private NavigationView navigationView;
     private DrawerLayout drawer;
+
+    private SimpleDraweeView draweeView;
 
     private BaseUserModel userModel;
 
@@ -93,14 +96,16 @@ public class MainActivity extends BaseActivity
     public void onBackPressed() {
         if (searchView.isSearchOpen()) {
             searchView.closeSearch();
+            return;
         }
 
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
+            return;
         }
+        finish();
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -121,6 +126,8 @@ public class MainActivity extends BaseActivity
             if (currentFragment != searchFragment) {
                 searchView.showSearch();
             }
+        } else if (id == R.id.action_notification) {
+            gotoActivity(NotificationActivity.class);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -162,12 +169,12 @@ public class MainActivity extends BaseActivity
             case R.id.nav_location:
                 gotoActivity(LocationActivity.class);
                 break;
-            case R.id.nav_settings:
-                if (settingsFragment == null) {
-                    settingsFragment = SettingsFragment.newInstance("", "");
-                }
-                showFragment(settingsFragment, R.string.action_settings);
-                break;
+//            case R.id.nav_settings:
+//                if (settingsFragment == null) {
+//                    settingsFragment = SettingsFragment.newInstance("", "");
+//                }
+//                showFragment(settingsFragment, R.string.action_settings);
+//                break;
         }
         drawer.closeDrawers();
         return true;
@@ -186,7 +193,7 @@ public class MainActivity extends BaseActivity
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         Uri uri = Uri.parse("http://115.28.22.98:7652/api/v1.0/static/head/" + MyConfig.uid + ".jpg");
-        final SimpleDraweeView draweeView = (SimpleDraweeView) navigationView.getHeaderView(0).findViewById(R.id.user_logo);
+        draweeView = (SimpleDraweeView) navigationView.getHeaderView(0).findViewById(R.id.user_logo);
         draweeView.setImageURI(uri);
         draweeView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -202,6 +209,17 @@ public class MainActivity extends BaseActivity
 
         navigationView.getMenu().getItem(4).setTitle(MyConfig.cityName);
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (UserHomeActivity.isPhotoChanged && draweeView != null) {
+            Uri uri = Uri.parse("http://115.28.22.98:7652/api/v1.0/static/head/" + MyConfig.uid + ".jpg");
+            Fresco.getImagePipeline().evictFromCache(uri);
+            draweeView.setImageURI(uri);
+            UserHomeActivity.isPhotoChanged = false;
+        }
     }
 
     private void initSearchView() {
