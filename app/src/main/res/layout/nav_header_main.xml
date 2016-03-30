@@ -10,7 +10,7 @@
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:theme="@style/ThemeOverlay.AppCompat.Dark"
-    android:background="@color/scolor">
+    android:background="@drawable/profile_header_back">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/user_logo"
